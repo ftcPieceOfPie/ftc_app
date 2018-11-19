@@ -22,11 +22,9 @@ public class TeleOpTutorial  extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         motorPractice = hardwareMap.dcMotor.get("motorPractice");
-
         motorPractice.setDirection(DcMotor.Direction.FORWARD);
 
         servoPractice = hardwareMap.servo.get("servoPractice");
-
         servoPractice.setPosition(ARM_RETRACTED_POSITION);
 
         waitForStart();
@@ -40,6 +38,7 @@ public class TeleOpTutorial  extends LinearOpMode {
             if(gamepad1.b){
                 servoPractice.setPosition(ARM_RETRACTED_POSITION);
             }
+
 
             idle();
         }

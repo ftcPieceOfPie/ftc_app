@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -241,6 +242,8 @@ public class MotorHelper {
 
 
     public void markerDrop(Servo markerDropper, double markerDropperPosition, Telemetry telemetry) {
+        //Making sure that the servo position given doesn't exceed or go to low
+        markerDropper.setPosition(Range.clip(markerDropperPosition, Servo.MIN_POSITION, Servo.MAX_POSITION));
 
         markerDropper.setPosition(markerDropperPosition);
         telemetry.addData("Servo Position =", markerDropperPosition);

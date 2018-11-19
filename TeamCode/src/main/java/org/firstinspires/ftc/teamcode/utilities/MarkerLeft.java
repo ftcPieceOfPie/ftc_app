@@ -92,7 +92,7 @@ public class MarkerLeft {
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
         //drop marker with servo movements
-        final double MARKER_DROPPER_SERVO_POSITION = 0.8;
+        final double MARKER_DROPPER_SERVO_POSITION = 0.2;
         //timeoutS = 5000;
         motorHelper.markerDrop(markerDropper, MARKER_DROPPER_SERVO_POSITION, telemetry);
         try {

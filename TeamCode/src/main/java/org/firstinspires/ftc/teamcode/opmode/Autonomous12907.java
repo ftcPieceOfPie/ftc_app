@@ -79,12 +79,18 @@ public class Autonomous12907 extends LinearOpMode {
     DcMotor backRight;
     Servo latch;
     Servo markerDropper;
+    Servo rightArm;
+    Servo leftArm;
+    Servo rightKnocker;
+    Servo leftKnocker;
     DcMotor liftActuator;
     BNO055IMU imu;
     DistanceSensor dist;
     Orientation lastAngles;
+    ColorSensor knockerColor;
     ColorSensor markerColor;
     ColorSensor middleColor;
+    DistanceSensor distance;
 
     //Initializes motors from the hardware map
 
@@ -96,16 +102,23 @@ public class Autonomous12907 extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         liftActuator = hardwareMap.get(DcMotor.class, "lift");
         latch = hardwareMap.get(Servo.class, "latch");
+        rightArm = hardwareMap.get(Servo.class, "rightArm");
+        leftArm = hardwareMap.get(Servo.class, "leftArm");
+        rightKnocker = hardwareMap.get(Servo.class, "rightKnocker");
+        leftKnocker = hardwareMap.get(Servo.class, "leftKnocker");
         dist= hardwareMap.get(DistanceSensor.class, "sensorDistance");
         markerDropper = hardwareMap.get(Servo.class, "markerDropper");
+        markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
+        middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
+        knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
+        distance = hardwareMap.get(DistanceSensor.class, "middleColor");
         //Setting the direction of the motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftActuator.setDirection(DcMotorSimple.Direction.FORWARD);
-        markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
-        middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -135,10 +148,10 @@ public class Autonomous12907 extends LinearOpMode {
             landing.drop(liftActuator, latch, motorHelper, telemetry);
             //sleep(500);
             //moving forward for Sampling - WORKING
-            sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor);
+            sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker,knockerColor);
             //sleep(5000);
             //moving to depot - WORKING
-            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor);
+            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor, distance);
 
         }
     }

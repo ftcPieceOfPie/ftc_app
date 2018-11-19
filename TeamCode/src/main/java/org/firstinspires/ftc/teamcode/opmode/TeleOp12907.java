@@ -24,6 +24,7 @@ public class TeleOp12907 extends LinearOpMode {
     DcMotor backRight;
     DcMotor lift;
     Servo latch;
+    Servo markerDropper;
     BNO055IMU imu = null;
 
     final double LATCH_EXTENDED_POSITION = 0.8;
@@ -41,16 +42,13 @@ public class TeleOp12907 extends LinearOpMode {
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         lift = hardwareMap.get(DcMotor.class, "lift");
         latch = hardwareMap.get(Servo.class, "latch");
+        markerDropper = hardwareMap.get(Servo.class, "markerDropper");
         //Setting the direction of the motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
-
-
-
-
     }
 
     //This method is for Tank Drive (a)
@@ -58,10 +56,32 @@ public class TeleOp12907 extends LinearOpMode {
         //joystick goes from -1 to +1, so we will negate it
         powerLeft = -gamepad1.left_stick_y;
         powerRight = -gamepad1.right_stick_y;
-        frontLeft.setPower(powerLeft*0.75);
+
+        //Since using quadratic drive, scale factor implements not full power - for more control
+        final double POWER_SCALE_FACTOR = 0.9;
+
+        /*frontLeft.setPower(powerLeft*0.75);
         backLeft.setPower(powerLeft*0.75);
         frontRight.setPower(powerRight*0.75);
-        backRight.setPower(powerRight*0.75);
+        backRight.setPower(powerRight*0.75);*/
+
+        //Quadratic Drive: the power is set to x squared
+        if (powerLeft != 0) {
+            frontLeft.setPower(Math.pow(powerLeft * POWER_SCALE_FACTOR , 3)/Math.abs(powerLeft * POWER_SCALE_FACTOR));
+            backLeft.setPower(Math.pow(powerLeft * POWER_SCALE_FACTOR, 3)/Math.abs(powerLeft * POWER_SCALE_FACTOR));
+        } else {
+            frontLeft.setPower(powerLeft);
+            backLeft.setPower(powerLeft);
+        }
+
+        if (powerRight != 0) {
+            frontRight.setPower(Math.pow(powerRight * POWER_SCALE_FACTOR, 3)/Math.abs(powerRight * POWER_SCALE_FACTOR));
+            backRight.setPower(Math.pow(powerRight * POWER_SCALE_FACTOR, 3)/Math.abs(powerRight * POWER_SCALE_FACTOR));
+        } else {
+            frontRight.setPower(powerRight);
+            backRight.setPower(powerRight);
+        }
+
     }
 
     //This method is for Arcade Drive (b)
@@ -72,10 +92,10 @@ public class TeleOp12907 extends LinearOpMode {
 
         powerRight = Range.clip(powerDrive + powerTurn, -1.0, 1.0);
         powerLeft = Range.clip(powerDrive - powerTurn, -1.0, 1.0);
-        frontLeft.setPower(powerLeft);
-        backLeft.setPower(powerLeft);
-        frontRight.setPower(powerRight);
-        backRight.setPower(powerRight);
+        frontLeft.setPower(powerLeft*0.75);
+        backLeft.setPower(powerLeft*0.75);
+        frontRight.setPower(powerRight*0.75);
+        backRight.setPower(powerRight*0.75);
     }
 
     @Override
@@ -91,6 +111,9 @@ public class TeleOp12907 extends LinearOpMode {
         boolean driveMode=false;
         boolean driveInput=false;
         while (opModeIsActive()) {
+
+
+            //GAMEPAD 1:
             //driveMode a is a tank drive, while driveMode b is an arcade style drive
             while (!driveInput) {
                 if (gamepad1.a) {
@@ -113,22 +136,35 @@ public class TeleOp12907 extends LinearOpMode {
                 telemetry.addData("Drive Mode: ", "Arcade Drive");
                 telemetry.update();
             }
-            //servo latching
 
+
+
+            //GAMEPAD 2:
+            //servo latching -->
             if (gamepad2.x){
                 latch.setPosition(LATCH_EXTENDED_POSITION);
             }
             if (gamepad2.a){
                 latch.setPosition(LATCH_RETRACTED_POSITION);
             }
-            //lift up and down
+
+            //lift up and down -->
             powerLift = -gamepad2.right_stick_y;
             lift.setPower(powerLift);
+
+            //dropping the marker -->
+            /*if(gamepad2.y) {
+                markerDropper.setPosition(LATCH_EXTENDED_POSITION);
+            }
+            if(gamepad2.b){
+                markerDropper.setPosition(LATCH_RETRACTED_POSITION);
+            } */
 
             telemetry.addData("Power Left: ", powerLeft);
             telemetry.addData("Power Right: ", powerRight);
             telemetry.update();
             idle();
+
         }
     }
 

@@ -53,6 +53,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -69,6 +70,7 @@ import org.firstinspires.ftc.teamcode.utilities.MarkerLeft;
 import org.firstinspires.ftc.teamcode.utilities.Parking;
 import org.firstinspires.ftc.teamcode.utilities.Sampling;
 
+@Disabled
 @Autonomous(name = "Autonomous 2019 Left", group = "autonomous")
 public class Autonomous12907Left extends LinearOpMode {
     //Naming the motors
@@ -78,12 +80,18 @@ public class Autonomous12907Left extends LinearOpMode {
     DcMotor backRight;
     Servo latch;
     Servo markerDropper;
+    Servo rightArm;
+    Servo leftArm;
+    Servo rightKnocker;
+    Servo leftKnocker;
     DcMotor liftActuator;
     BNO055IMU imu;
     DistanceSensor dist;
     Orientation lastAngles;
+    ColorSensor knockerColor;
     ColorSensor markerColor;
     ColorSensor middleColor;
+    DistanceSensor distance;
 
     //Initializes motors from the hardware map
 
@@ -93,6 +101,11 @@ public class Autonomous12907Left extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        rightArm = hardwareMap.get(Servo.class, "rightArm");
+        leftArm = hardwareMap.get(Servo.class, "leftArm");
+        rightKnocker = hardwareMap.get(Servo.class, "rightKnocker");
+        leftKnocker = hardwareMap.get(Servo.class, "leftKnocker");
+        dist= hardwareMap.get(DistanceSensor.class, "sensorDistance");
         liftActuator = hardwareMap.get(DcMotor.class, "lift");
         latch = hardwareMap.get(Servo.class, "latch");
         dist= hardwareMap.get(DistanceSensor.class, "sensorDistance");
@@ -105,6 +118,8 @@ public class Autonomous12907Left extends LinearOpMode {
         liftActuator.setDirection(DcMotorSimple.Direction.FORWARD);
         markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
         middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
+        knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
+        distance = hardwareMap.get(DistanceSensor.class, "middleColor");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -134,7 +149,7 @@ public class Autonomous12907Left extends LinearOpMode {
             landing.drop(liftActuator, latch, motorHelper, telemetry);
             //sleep(500);
             //moving forward for Sampling - WORKING
-            sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor);
+            sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker,knockerColor);
             //sleep(5000);
             //moving to depot - WORKING
             marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor);
