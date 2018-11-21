@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import android.widget.HorizontalScrollView;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -38,6 +40,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import javax.net.ssl.HostnameVerifier;
 
 /**
  * This 2018-2019 OpMode illustrates the basics of using the TensorFlow Object Detection API to
@@ -50,7 +54,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * is explained below.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
+//////making sure program doesn't show up on phones (only final autonomous does)
 @Disabled
+
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
@@ -68,7 +74,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * Once you've obtained a license key, copy the string from the Vuforia web site
      * and paste it in to your code on the next line, between the double quotes.
      */
-    private static final String VUFORIA_KEY = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+    private static final String VUFORIA_KEY = "AYJ3N6D/////AAABmZ2Icf/PZ0ajiJKTK1ljgutPstOUxpIqfSB7xP/OphqNsQryq3m1pawYHoXK6D06FiGPO7zMgXFhVGSY82cswYVPq9JTE6hivLI9pxYpTxx+sMTae4URQ7xoSNdrHOQMsKjcm4NTuEJCXgDEAlBKwh4f1Hk/64IyMaM7Lyyr6cGj2l+8B9seDzroPaXPdgqAnMvJDpEB+YAS/rT93NygTlk+2zBddTZeNIaT4rHuHjebkm6xtovRUJykMBCRf2E+JJVMWiexqp7F5OMJaK+u6ceDMjbG/2yrojiMVTWAwdDRSre1RnkYotxxby1jxxSh3NFFmaRe/4vPi2r1xTs1nX4R61aJIaqpVXfLk1yX3drM";
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
