@@ -18,7 +18,6 @@ public class Sampling {
                                        Telemetry telemetry, ColorSensor middleColor, DistanceSensor distance, Servo rightArm, Servo leftArm, Servo rightKnocker,
                                        Servo leftKnocker, ColorSensor knockerColor) {
 
-
         double powerRight = 0.25;
         double powerLeft = 0.25;
         double targetPositionLeft = 17.5;
@@ -71,7 +70,7 @@ public class Sampling {
 
             }
 
-            //in case it doesn't go back up
+            //in case it doesn't go back up, setting both arms back up
 
             leftArm.setPosition(0);
 
@@ -102,7 +101,7 @@ public class Sampling {
             knockMiddleYellow(motorHelper, frontRight, frontLeft, backRight, backLeft, telemetry);
 
         } else {
-            //
+            //Putting arm down (originally for color sensing)
             leftKnocker.setPosition(0.275);
 
             try {

@@ -59,6 +59,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -174,6 +175,13 @@ public class Autonomous12907 extends LinearOpMode {
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
             canUseTensor = true;
+            telemetry.addData("Yes", "Tensor Flow can be used");
+            //added rest to view telemetry
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
             canUseTensor = false;
@@ -184,27 +192,25 @@ public class Autonomous12907 extends LinearOpMode {
         if (opModeIsActive()) {
             //calling tensor (same code as ConceptTensorFlowObjectDetection)
             String yellowPosition = "Unknown";
-            if(canUseTensor) {
+            if (canUseTensor) {
                 yellowPosition = detectYellowPosition();
             }
-
 
 
             //landing then unlatching - WORKING
             landing.drop(liftActuator, latch, motorHelper, telemetry);
             //sleep(500);
             //moving forward for Sampling - WORKING
-            if(yellowPosition.equalsIgnoreCase("Unknown")) {
+            if (yellowPosition.equalsIgnoreCase("Unknown")) {
                 sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
             } else {
                 sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distance, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);
+                //}
+                //moving to depot - WORKING
+                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor, distance);
+
+
             }
-            //moving to depot - WORKING
-            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor, distance);
-
-
-
-
         }
     }
 
@@ -236,46 +242,79 @@ public class Autonomous12907 extends LinearOpMode {
     }
 
     public String detectYellowPosition() {
+        ElapsedTime runTime = new ElapsedTime();
+
+        telemetry.addData("Inside method:", "detectYellowPosition");
+        telemetry.update();
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         String yellowPosition = "Unknown";
 
         //Activate Tensor Flow Object Detection.
         if (tfod != null) {
             tfod.activate();
         }
+        runTime.reset();
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        while (true) {
 
-        if (tfod != null) {
-            // getUpdatedRecognitions() will return null if no new information is available since
-            // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-                if (updatedRecognitions.size() == 3) {
-                    int goldMineralX = -1;
-                    int silverMineral1X = -1;
-                    int silverMineral2X = -1;
-                    for (Recognition recognition : updatedRecognitions) {
-                        if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                            goldMineralX = (int) recognition.getLeft();
-                        } else if (silverMineral1X == -1) {
-                            silverMineral1X = (int) recognition.getLeft();
-                        } else {
-                            silverMineral2X = (int) recognition.getLeft();
+            if (tfod != null) {
+                // getUpdatedRecognitions() will return null if no new information is available since
+                // the last time that call was made.
+                updatedRecognitions = tfod.getUpdatedRecognitions();
+                if (updatedRecognitions != null) {
+                    telemetry.addData("# Object Detected", updatedRecognitions.size());
+                    //added sleep to see telemetry
+
+                    if (updatedRecognitions.size() == 3) {
+                        int goldMineralX = -1;
+                        int silverMineral1X = -1;
+                        int silverMineral2X = -1;
+                        for (Recognition recognition : updatedRecognitions) {
+                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
+                                goldMineralX = (int) recognition.getLeft();
+                            } else if (silverMineral1X == -1) {
+                                silverMineral1X = (int) recognition.getLeft();
+                            } else {
+                                silverMineral2X = (int) recognition.getLeft();
+                            }
                         }
+                        if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
+                            if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
+                                telemetry.addData("Gold Mineral Position", "Left");
+                                yellowPosition = "Left";
+
+                            } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
+                                telemetry.addData("Gold Mineral Position", "Right");
+                                yellowPosition = "Right";
+
+                            } else {
+                                telemetry.addData("Gold Mineral Position", "Center");
+                                yellowPosition = "Center";
+                            }
+                        }
+
                     }
-                    if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                        if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Left");
-                            yellowPosition = "Left";
-                        } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                            telemetry.addData("Gold Mineral Position", "Right");
-                            yellowPosition = "Right";
-                        } else {
-                            telemetry.addData("Gold Mineral Position", "Center");
-                            yellowPosition = "Center";
+                    telemetry.update();
+                    //Breaking tensor flow if objects detected is 3 or if it times out (after 2 seconds)
+                    if (updatedRecognitions.size() == 3 || runTime.milliseconds() > 2000) {
+                        telemetry.addData("Objects Detected: ", updatedRecognitions.size());
+                        telemetry.addData("Elapsed Time: ", runTime.milliseconds());
+                        telemetry.update();
+                        //sleep to view telemetry
+                        try {
+                            Thread.sleep(7000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+                        break;
+
                     }
                 }
-                telemetry.update();
             }
         }
 

@@ -149,7 +149,7 @@ public class Autonomous12907Left extends LinearOpMode {
             landing.drop(liftActuator, latch, motorHelper, telemetry);
             //sleep(500);
             //moving forward for Sampling - WORKING
-            sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker,knockerColor);
+            //sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker,knockerColor);
             //sleep(5000);
             //moving to depot - WORKING
             marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor);
