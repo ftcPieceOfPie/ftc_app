@@ -94,7 +94,7 @@ public class MarkerLeft {
         //drop marker with servo movements
         final double MARKER_DROPPER_SERVO_POSITION = 0.2;
         //timeoutS = 5000;
-        motorHelper.markerDrop(markerDropper, MARKER_DROPPER_SERVO_POSITION, telemetry);
+        //motorHelper.markerDrop(markerDropper, MARKER_DROPPER_SERVO_POSITION, telemetry);
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {

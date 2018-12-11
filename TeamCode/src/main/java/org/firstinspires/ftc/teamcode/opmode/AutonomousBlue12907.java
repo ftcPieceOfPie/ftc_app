@@ -105,7 +105,7 @@ public class AutonomousBlue12907 extends LinearOpMode{
                 sampling.forward(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
                 //sleep(5000);
                 //moving to depot - WORKING
-                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor, distance);
+                //marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerColor, distance);
 
             }
         }

@@ -103,12 +103,14 @@ public class Autonomous12907 extends LinearOpMode {
     DcMotor frontRight;
     DcMotor backRight;
     Servo latch;
-    Servo markerDropper;
+    //Servo markerDropper;
+    Servo sweeperDump;
     Servo rightArm;
     Servo leftArm;
     Servo rightKnocker;
     Servo leftKnocker;
     DcMotor liftActuator;
+    DcMotor sweeper;
     BNO055IMU imu;
     DistanceSensor dist;
     Orientation lastAngles;
@@ -125,6 +127,7 @@ public class Autonomous12907 extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        sweeper = hardwareMap.get(DcMotor.class, "sweeper");
         liftActuator = hardwareMap.get(DcMotor.class, "lift");
         latch = hardwareMap.get(Servo.class, "latch");
         rightArm = hardwareMap.get(Servo.class, "rightArm");
@@ -132,7 +135,8 @@ public class Autonomous12907 extends LinearOpMode {
         rightKnocker = hardwareMap.get(Servo.class, "rightKnocker");
         leftKnocker = hardwareMap.get(Servo.class, "leftKnocker");
         dist = hardwareMap.get(DistanceSensor.class, "sensorDistance");
-        markerDropper = hardwareMap.get(Servo.class, "markerDropper");
+        //markerDropper = hardwareMap.get(Servo.class, "markerDropper");
+        sweeperDump = hardwareMap.get(Servo.class, "sweeperDump");
         markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
         middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
         knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
@@ -163,14 +167,14 @@ public class Autonomous12907 extends LinearOpMode {
         Landing landing = new Landing();
         Sampling sampling = new Sampling();
         Marker marker = new Marker();
-        Parking parking = new Parking();
+        //Parking parking = new Parking();
         MotorHelper motorHelper = new MotorHelper();
         SensorHelper sensorHelper = new SensorHelper();
 
         //TensorCode:
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        initVuforia();
+        /*initVuforia();
         boolean canUseTensor;
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
             initTfod();
@@ -178,154 +182,58 @@ public class Autonomous12907 extends LinearOpMode {
             telemetry.addData("Yes", "Tensor Flow can be used");
             //added rest to view telemetry
             try {
-                Thread.sleep(5000);
+                Thread.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
             canUseTensor = false;
-        }
+        }*/
 
         waitForStart();
 
-        if (opModeIsActive()) {
+        /*if (opModeIsActive()) {
             //calling tensor (same code as ConceptTensorFlowObjectDetection)
             String yellowPosition = "Unknown";
             if (canUseTensor) {
                 yellowPosition = detectYellowPosition();
+            }*/
+
+
+        /*ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        while (runtime.milliseconds() > 29000) {
+
+        }*/
+
+        //initializing sweeper dump inwards for start of autonomous
+            sweeperDump.setPosition(0.8);
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
 
 
             //landing then unlatching - WORKING
             landing.drop(liftActuator, latch, motorHelper, telemetry);
-            //sleep(500);
+
             //moving forward for Sampling - WORKING
-            if (yellowPosition.equalsIgnoreCase("Unknown")) {
+            //if (yellowPosition.equalsIgnoreCase("Unknown")) {
                 sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
-            } else {
-                sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distance, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);
-                //}
                 //moving to depot - WORKING
-                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerDropper, markerColor, distance);
+                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerColor, distance, sweeperDump, sweeper);
 
+            //} else {
+                //sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distance, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);
+                //}
+
+                //moving to depot - WORKING
+                //marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerColor, distance, sweeperDump, sweeper);
 
             }
         }
-    }
-
-    //ConceptTensorFlowObjectDetection:
-
-    /*
-    Initialize the Vuforia localization engine.
-     */
-    private void initVuforia() {
-        //Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-    }
-
-    /*
-    Initialize the Tensor Flow Object Detection engine.
-     */
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
-    }
-
-    public String detectYellowPosition() {
-        ElapsedTime runTime = new ElapsedTime();
-
-        telemetry.addData("Inside method:", "detectYellowPosition");
-        telemetry.update();
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        String yellowPosition = "Unknown";
-
-        //Activate Tensor Flow Object Detection.
-        if (tfod != null) {
-            tfod.activate();
-        }
-        runTime.reset();
-        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-        while (true) {
-
-            if (tfod != null) {
-                // getUpdatedRecognitions() will return null if no new information is available since
-                // the last time that call was made.
-                updatedRecognitions = tfod.getUpdatedRecognitions();
-                if (updatedRecognitions != null) {
-                    telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    //added sleep to see telemetry
-
-                    if (updatedRecognitions.size() == 3) {
-                        int goldMineralX = -1;
-                        int silverMineral1X = -1;
-                        int silverMineral2X = -1;
-                        for (Recognition recognition : updatedRecognitions) {
-                            if (recognition.getLabel().equals(LABEL_GOLD_MINERAL)) {
-                                goldMineralX = (int) recognition.getLeft();
-                            } else if (silverMineral1X == -1) {
-                                silverMineral1X = (int) recognition.getLeft();
-                            } else {
-                                silverMineral2X = (int) recognition.getLeft();
-                            }
-                        }
-                        if (goldMineralX != -1 && silverMineral1X != -1 && silverMineral2X != -1) {
-                            if (goldMineralX < silverMineral1X && goldMineralX < silverMineral2X) {
-                                telemetry.addData("Gold Mineral Position", "Left");
-                                yellowPosition = "Left";
-
-                            } else if (goldMineralX > silverMineral1X && goldMineralX > silverMineral2X) {
-                                telemetry.addData("Gold Mineral Position", "Right");
-                                yellowPosition = "Right";
-
-                            } else {
-                                telemetry.addData("Gold Mineral Position", "Center");
-                                yellowPosition = "Center";
-                            }
-                        }
-
-                    }
-                    telemetry.update();
-                    //Breaking tensor flow if objects detected is 3 or if it times out (after 2 seconds)
-                    if (updatedRecognitions.size() == 3 || runTime.milliseconds() > 2000) {
-                        telemetry.addData("Objects Detected: ", updatedRecognitions.size());
-                        telemetry.addData("Elapsed Time: ", runTime.milliseconds());
-                        telemetry.update();
-                        //sleep to view telemetry
-                        try {
-                            Thread.sleep(7000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-
-                    }
-                }
-            }
-        }
-
-        if (tfod != null) {
-            tfod.shutdown();
-        }
-        return yellowPosition;
-    }
-
-
-}
 
 
 

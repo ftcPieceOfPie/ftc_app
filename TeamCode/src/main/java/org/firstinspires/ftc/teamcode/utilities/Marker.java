@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utilities;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -12,7 +13,8 @@ import org.firstinspires.ftc.teamcode.helper.SensorHelper;
 
 public class Marker {
 
-    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, Servo markerDropper, ColorSensor color, DistanceSensor distance) {
+    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, ColorSensor color, DistanceSensor distance, Servo sweeperDump, DcMotor sweeper) {
+
         //going back 8 inches
         double powerRight = -0.5;
         double powerLeft = -0.5;
@@ -26,8 +28,8 @@ public class Marker {
             e.printStackTrace();
         }
 
-        //turning towards wall
-        float angle = 45;
+        //turning towards wall - CORRECT THIS!!!
+        float angle = 55;
         double turnPower = 0.5;
         motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu);
         try {
@@ -49,7 +51,9 @@ public class Marker {
             e.printStackTrace();
         }
 
+
         //detect if pie is white or black with color sensor
+        //turnRight is a boolean, it will read either true or false
         SensorHelper sensorHelper = new SensorHelper();
         boolean turnRight = sensorHelper.isWhite(color, distance, telemetry);
         telemetry.addData("turnRight: ",turnRight);
@@ -59,6 +63,7 @@ public class Marker {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         //if it's white (true), turn right
         if(turnRight){
             angle = -60;
@@ -94,22 +99,28 @@ public class Marker {
         }
         */
 
-        //go forwards 4 feet
-        targetPositionLeft = 45;
-        targetPositionRight = 45;
+        //go forwards 4 feet to the depot
+        //subtract 5 inches for dropping marker with sweeper servo extended length
+        targetPositionLeft = (45 - 10);
+        targetPositionRight = (45 - 10);
         timeoutS = 6;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
 
         //drop marker with servo movements
-        final double MARKER_DROPPER_SERVO_POSITION = 0.2;
+       double markerDropPositionDown = 0.28;
+       double markerDropPositionUp = 0.8;
+
         //timeoutS = 5000;
-        motorHelper.markerDrop(markerDropper, MARKER_DROPPER_SERVO_POSITION, telemetry);
+        motorHelper.markerDrop(sweeperDump, markerDropPositionDown, markerDropPositionUp, sweeper, telemetry);
+
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
 
         //go backwards 48 feet (INTO CRATER)
         //PARKING!!
@@ -117,8 +128,8 @@ public class Marker {
         if(turnRight){
             powerRight = -0.6;
             powerLeft = -0.5;
-            targetPositionLeft = -70;
-            targetPositionRight = -70;
+            targetPositionLeft = (-70 + 5);
+            targetPositionRight = (-70 + 5);
             timeoutS = 10;
             motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
@@ -127,15 +138,15 @@ public class Marker {
         else{
             powerRight = -0.5;
             powerLeft = -0.6;
-            targetPositionLeft = -70;
-            targetPositionRight = -70;
+            targetPositionLeft = (-70 + 10);
+            targetPositionRight = (-70 + 10);
             timeoutS = 10;
             motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
         }
 
         /*
-        //Going back into crater is done above depending on what turn
+        //Going back into crater is done ABOVE depending on what turn
         powerRight = -0.6;
         powerLeft = -0.5;
         targetPositionLeft = -70;

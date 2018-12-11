@@ -34,8 +34,8 @@ public class Landing {
         double pLiftPower = 0.25;
         int pTargetPosition= 100;
         double timeoutS = 5250;
-        pie.liftActuatorInches(pLiftMotor,  pLiftPower,  pTargetPosition, timeoutS, telemetry);
-        pie.latch(pLatchServo, LATCH_SERVO_POSITION, telemetry);
+        motorHelper.liftActuatorInches(pLiftMotor,  pLiftPower,  pTargetPosition, timeoutS, telemetry);
+        motorHelper.latch(pLatchServo, LATCH_SERVO_POSITION, telemetry);
     }
 
 

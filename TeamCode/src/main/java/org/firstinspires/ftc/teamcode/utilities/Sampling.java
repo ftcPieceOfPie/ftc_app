@@ -32,16 +32,26 @@ public class Sampling {
             e.printStackTrace();
         }
 
+        //if distance is more than 6 cm from the mineral, go forwards until reached 6 cm
+        //motorHelper.forwardWithDistance(frontRight,frontLeft,backRight,backLeft, 0.25, 6, distance, telemetry);
+
         // Detect whether center block is yellow
         boolean whiteMiddle = sensorHelper.isWhite(middleColor, distance, telemetry);
         telemetry.addData("middleColor: ", whiteMiddle);
         telemetry.update();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         if (!whiteMiddle) {
             knockMiddleYellow(motorHelper, frontRight, frontLeft, backRight, backLeft, telemetry);
 
         } else {
             //color sensor arm dropped down to determine if the left is yellow
-            leftKnocker.setPosition(0.275);
+
+            leftKnocker.setPosition(0.825);
 
             try {
                 Thread.sleep(1000);
@@ -49,7 +59,7 @@ public class Sampling {
                 e.printStackTrace();
             }
 
-            leftArm.setPosition(EXTEND_OUT);
+            leftArm.setPosition(0.575);
 
             try {
                 Thread.sleep(1000);
@@ -66,7 +76,7 @@ public class Sampling {
 
             } else {
                 //else, the right side would have the cube, and it would knock it off with the right arm/knocker
-                knockRightYellow(leftArm, rightArm, rightKnocker);
+                knockRightYellow(leftKnocker, leftArm, rightArm, rightKnocker);
 
             }
 
@@ -82,6 +92,7 @@ public class Sampling {
     public void forwardWithTensor(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, SensorHelper sensorHelper,
                                   Telemetry telemetry, DistanceSensor distance, Servo rightArm, Servo leftArm, Servo rightKnocker,
                                   Servo leftKnocker, String yellowPosition) {
+
         //moving forward to minerals
         double powerRight = 0.25;
         double powerLeft = 0.25;
@@ -97,12 +108,15 @@ public class Sampling {
             e.printStackTrace();
         }
 
+        //if distance is more than 6 cm from the mineral, go forwards until reached 6 cm
+        //motorHelper.forwardWithDistance(frontRight,frontLeft,backRight,backLeft, 0.25, 6, distance, telemetry);
+
         if (yellowPosition.equalsIgnoreCase("Center")) {
             knockMiddleYellow(motorHelper, frontRight, frontLeft, backRight, backLeft, telemetry);
 
         } else {
             //Putting arm down (originally for color sensing)
-            leftKnocker.setPosition(0.275);
+            leftKnocker.setPosition(0.875);
 
             try {
                 Thread.sleep(1000);
@@ -110,7 +124,7 @@ public class Sampling {
                 e.printStackTrace();
             }
 
-            leftArm.setPosition(EXTEND_OUT);
+            leftArm.setPosition(0.575);
 
             try {
                 Thread.sleep(1000);
@@ -124,7 +138,7 @@ public class Sampling {
 
             } else {
                 //else, the right side would have the cube, and it would knock it off with the right arm/knocker
-                knockRightYellow(leftArm, rightArm, rightKnocker);
+                knockRightYellow(leftKnocker, leftArm, rightArm, rightKnocker);
 
             }
 
@@ -162,7 +176,7 @@ public class Sampling {
     }
 
     private void knockLeftYellow(Servo leftKnocker, Servo leftArm) {
-        leftKnocker.setPosition(0);
+        leftKnocker.setPosition(0.7);
 
         try {
             Thread.sleep(1000);
@@ -178,7 +192,7 @@ public class Sampling {
             e.printStackTrace();
         }
 
-        leftKnocker.setPosition(0.4);
+        leftKnocker.setPosition(1);
 
         try {
             Thread.sleep(1000);
@@ -186,7 +200,7 @@ public class Sampling {
             e.printStackTrace();
         }
 
-        leftArm.setPosition(EXTEND_IN);
+        leftArm.setPosition(0.2);
 
         try {
             Thread.sleep(1000);
@@ -194,17 +208,33 @@ public class Sampling {
             e.printStackTrace();
         }
 
+        leftKnocker.setPosition(0);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void knockRightYellow(Servo leftArm, Servo rightArm, Servo rightKnocker) {
+    private void knockRightYellow(Servo leftKnocker, Servo leftArm, Servo rightArm, Servo rightKnocker) {
 
-        leftArm.setPosition(EXTEND_IN);
+        leftArm.setPosition(0.2);
 
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        leftKnocker.setPosition(0);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         rightKnocker.setPosition(0.6);
 
@@ -214,6 +244,7 @@ public class Sampling {
             e.printStackTrace();
         }
 
+
         rightArm.setPosition(0);
 
         try {
@@ -222,7 +253,7 @@ public class Sampling {
             e.printStackTrace();
         }
 
-        rightKnocker.setPosition(0);
+        rightKnocker.setPosition(0.2);
 
         try {
             Thread.sleep(1000);
@@ -231,6 +262,14 @@ public class Sampling {
         }
 
         rightArm.setPosition(0.6);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        rightKnocker.setPosition(1);
 
         try {
             Thread.sleep(1000);

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.helper;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -133,7 +134,7 @@ public class MotorHelper {
         telemetry.addData("Servo Position =", latchPosition);
         telemetry.update();
         try {
-            Thread.sleep(2000);
+            Thread.sleep((1000));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -222,18 +223,21 @@ public class MotorHelper {
 
 
     public void forwardWithDistance(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft,
-                                    double power, double distance, DistanceSensor dist){
-        while(dist.getDistance(DistanceUnit.CM)>distance){
+                                    double power, double distance, DistanceSensor dist, Telemetry telemetry){
+        while(dist.getDistance(DistanceUnit.CM) > distance){
             frontRight.setPower(power);
             backRight.setPower(power);
             frontLeft.setPower(power);
             backLeft.setPower(power);
+            telemetry.addData("Distance: ", dist.getDistance(DistanceUnit.CM));
+            telemetry.update();
         }
         frontRight.setPower(0);
         backRight.setPower(0);
         frontLeft.setPower(0);
         backLeft.setPower(0);
-
+        telemetry.addData("6 cm from mineral: ", "REACHED!");
+        telemetry.update();
     }
 
 
@@ -241,20 +245,56 @@ public class MotorHelper {
 
 
 
-    public void markerDrop(Servo markerDropper, double markerDropperPosition, Telemetry telemetry) {
+    public void markerDrop(Servo sweeperDump, double sweeperDumpPositionDown, double sweeperDumpPositionUp, DcMotor sweeper, Telemetry telemetry) {
         //Making sure that the servo position given doesn't exceed or go to low
-        markerDropper.setPosition(Range.clip(markerDropperPosition, Servo.MIN_POSITION, Servo.MAX_POSITION));
+        sweeperDump.setPosition(Range.clip(sweeperDumpPositionDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
 
-        markerDropper.setPosition(markerDropperPosition);
-        telemetry.addData("Servo Position =", markerDropperPosition);
-        telemetry.update();
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        while(runtime.milliseconds()<1000){
+            sweeper.setPower(-1);
+        }
+        sweeper.setPower(0);
+
+        sweeperDump.setPosition(Range.clip(sweeperDumpPositionUp, Servo.MIN_POSITION, Servo.MAX_POSITION));
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
+
+
+
+
+    public void boomEncoder(DcMotor boom, int boomTargetPosition, double boomPower, Telemetry telemetry) {
+
+        boom.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        boom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        boom.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        boom.setTargetPosition(boomTargetPosition);
+        boom.setPower(boomPower);
+        while(boom.isBusy()){
+            telemetry.addData("Boom Current Position: ", boom.getCurrentPosition());
+            telemetry.addData("Boom Power: ", boomPower);
+            telemetry.update();
+        }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
+        boom.setPower(0);
+
+    }
+
 }
 
 
