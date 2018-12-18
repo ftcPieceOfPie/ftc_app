@@ -26,7 +26,7 @@ public class MarkerLeft {
         //turning towards wall
         float angle = 45;
         double turnPower = 0.5;
-        motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu);
+        motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {
@@ -78,7 +78,7 @@ public class MarkerLeft {
         //turning towards depot
         angle = 20;
         turnPower = 0.5;
-        motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu);
+        motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {

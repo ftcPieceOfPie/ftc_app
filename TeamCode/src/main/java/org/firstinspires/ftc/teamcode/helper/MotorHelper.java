@@ -19,8 +19,6 @@ public class MotorHelper {
 
 
 
-
-
     Orientation lastAngles;
     double globalAngle;
 
@@ -30,25 +28,30 @@ public class MotorHelper {
     }
 
     public void turnWithEncoders(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight,
-                                 DcMotor backLeft, float angle, double power, BNO055IMU imu) {
+                                 DcMotor backLeft, float angle, double power, BNO055IMU imu, Telemetry telemetry) {
          double currentAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
                 AngleUnit.DEGREES).firstAngle;
-        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
-        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODERS);
+
+         telemetry.addData("Initial Angle: ", currentAngle);
+         telemetry.update();
+
+
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         if (angle > 0) {
             while (((imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                    AngleUnit.DEGREES)).firstAngle)-currentAngle < angle) {
+                    AngleUnit.DEGREES)).firstAngle) - currentAngle < angle) {
                 frontRight.setPower(power);
                 backRight.setPower(power);
                 frontLeft.setPower(-power);
                 backLeft.setPower(-power);
             }
-        }
-        else {
+        } else {
             while (((imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
-                    AngleUnit.DEGREES)).firstAngle)-currentAngle > angle) {
+                    AngleUnit.DEGREES)).firstAngle) - currentAngle > angle) {
                 frontRight.setPower(-power);
                 backRight.setPower(-power);
                 frontLeft.setPower(power);
@@ -61,6 +64,13 @@ public class MotorHelper {
         backRight.setPower(0);
         frontLeft.setPower(0);
         backLeft.setPower(0);
+
+        currentAngle = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,
+                AngleUnit.DEGREES).firstAngle;
+
+        telemetry.addData("Final Angle: ", currentAngle);
+        telemetry.update();
+
 
     }
 
@@ -247,6 +257,7 @@ public class MotorHelper {
 
     public void markerDrop(Servo sweeperDump, double sweeperDumpPositionDown, double sweeperDumpPositionUp, DcMotor sweeper, Telemetry telemetry) {
         //Making sure that the servo position given doesn't exceed or go to low
+
         sweeperDump.setPosition(Range.clip(sweeperDumpPositionDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
 
         try {
@@ -257,7 +268,7 @@ public class MotorHelper {
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        while(runtime.milliseconds()<1000){
+        while(runtime.milliseconds()<500){
             sweeper.setPower(-1);
         }
         sweeper.setPower(0);

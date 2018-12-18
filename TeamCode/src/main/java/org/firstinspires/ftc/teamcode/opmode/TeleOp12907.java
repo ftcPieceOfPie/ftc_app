@@ -19,17 +19,14 @@ import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 @TeleOp(name = "TeleOp 12907", group = "teleop")
 public class TeleOp12907 extends LinearOpMode {
     //Naming the motors
-    // DcMotor frontLeft;
     DcMotor backLeft;
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor frontLeft;
     DcMotor lift;
-    //DcMotor boom;
     DcMotor slide;
     DcMotor sweeper;
     Servo latch;
-    //Servo markerDropper;
     Servo sweeperDump;
     Servo mineralDump;
     Servo rightKnocker;
@@ -51,11 +48,9 @@ public class TeleOp12907 extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        //boom = hardwareMap.get(DcMotor.class, "boom");
         slide = hardwareMap.get(DcMotor.class, "slide");
         sweeper = hardwareMap.get(DcMotor.class, "sweeper");
         latch = hardwareMap.get(Servo.class, "latch");
-        //markerDropper = hardwareMap.get(Servo.class, "markerDropper");
         sweeperDump = hardwareMap.get(Servo.class, "sweeperDump");
         mineralDump = hardwareMap.get(Servo.class, "mineralDump");
         rightKnocker = hardwareMap.get(Servo.class, "rightKnocker");
@@ -68,7 +63,6 @@ public class TeleOp12907 extends LinearOpMode {
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         lift.setDirection(DcMotorSimple.Direction.FORWARD);
-        //boom.setDirection(DcMotorSimple.Direction.FORWARD);
         slide.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(DcMotorSimple.Direction.FORWARD);
 
@@ -90,7 +84,7 @@ public class TeleOp12907 extends LinearOpMode {
 
     }
 
-    //This method is for Tank Drive (a)
+    //This method is for Tank Drive:
     public void tankDrive(double powerRight, double powerLeft) {
         //joystick goes from -1 to +1, so we will negate it
         powerLeft = -gamepad1.left_stick_y;
@@ -109,12 +103,8 @@ public class TeleOp12907 extends LinearOpMode {
             powerScaleFactor= 0.9;
         }
 
-        //frontLeft.setPower(powerLeft*0.75);
-        //backLeft.setPower(powerLeft*0.75);
-        //frontRight.setPower(powerRight*0.75);
-        //backRight.setPower(powerRight*0.75);
-
         //Quadratic Drive: the power is set to x squared
+        //Math: power cubed over the absolute power = power squared --> to keep the sign of the orig pwr
         if (powerLeft != 0) {
             frontLeft.setPower(Math.pow(powerLeft * powerScaleFactor , 3)/Math.abs(powerLeft * powerScaleFactor));
             backLeft.setPower(Math.pow(powerLeft * powerScaleFactor, 3)/Math.abs(powerLeft * powerScaleFactor));
@@ -133,26 +123,9 @@ public class TeleOp12907 extends LinearOpMode {
 
     }
 
-    /*//This method is for Arcade Drive (b)
-    public void arcadeDrive(double powerRight, double powerLeft){
-        //joystick goes from -1 to +1, so we will negate it
-        double powerDrive = -gamepad1.left_stick_y;
-        double powerTurn = gamepad1.right_stick_x;
-
-        powerRight = Range.clip(powerDrive + powerTurn, -1.0, 1.0);
-        powerLeft = Range.clip(powerDrive - powerTurn, -1.0, 1.0);
-        frontLeft.setPower(powerLeft*0.75);
-        backLeft.setPower(powerLeft*0.75);
-        frontRight.setPower(powerRight*0.75);
-        backRight.setPower(powerRight*0.75);
-    }*/
-
     @Override
     public void runOpMode() throws InterruptedException {
         initialize();
-
-        /*boom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        boom.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
 
         waitForStart();
 
@@ -171,35 +144,39 @@ public class TeleOp12907 extends LinearOpMode {
 
             //GAMEPAD 1:
 
-            //driveMode a is a tank drive, while driveMode b is an arcade style drive
-           /* while (!driveInput) {
-                if (gamepad1.a) {
-                    driveMode = true;
-                    driveInput=true;
-                }
-                if (gamepad1.b) {
-                    driveMode = false;
-                    driveInput=true;
-                }
+            //calling the method that gives the drivetrain power using joysticks
+            tankDrive(powerRight, powerLeft);
+
+            //dumping minerals into lander - 3 stages (down, lifted halfway, up&dump)
+            if (gamepad1.y){
+                mineralDump.setPosition(EXTENDED_POSITION);
+                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
+                telemetry.update();
             }
-            if (driveMode) {
-                tankDrive(powerRight, powerLeft);
-                telemetry.addData("Drive Mode: ", "Tank Drive");
+
+            if(gamepad1.x) {
+                mineralDump.setPosition(HALF_EXTENDED_POSITION);
+                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
+                telemetry.update();
+            }
+
+            if (gamepad1.a){
+                mineralDump.setPosition(RETRACTED_POSITION);
+                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
+                telemetry.update();
+            }
+
+            if (gamepad1.b) {
+                mineralDump.setPosition(0.3);
+                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
                 telemetry.update();
 
             }
-            if (!driveMode) {
-                arcadeDrive(powerRight, powerLeft);
-                telemetry.addData("Drive Mode: ", "Arcade Drive");
-                telemetry.update();
-            }*/
-
-           tankDrive(powerRight, powerLeft);
 
 
             //GAMEPAD 2:
 
-            //servo latching -->
+            //servo (hook) latching -->
             if (gamepad2.dpad_left){
                 latch.setPosition(EXTENDED_POSITION);
             }
@@ -207,13 +184,9 @@ public class TeleOp12907 extends LinearOpMode {
                 latch.setPosition(RETRACTED_POSITION);
             }
 
-            //lift up and down -->
+            //lift linear actuator up and down for latching -->
             powerLift = -gamepad2.left_stick_y;
             lift.setPower(powerLift);
-
-            //collection slider for reaching out to the crater
-            //powerSlide = -gamepad2.right_stick_y;
-            //slide.setPower(powerSlide * 0.5);
 
             //using triggers to put the slide out and in
             powerSlide = gamepad2.right_trigger;
@@ -226,18 +199,32 @@ public class TeleOp12907 extends LinearOpMode {
             double powerSweep = gamepad2.right_stick_y;
             sweeper.setPower(powerSweep);
 
-            //right & left bumpers to adjust sweeping servo position
+            //putting minerals from sweeper into dumper
+            if (gamepad2.y){
+                //sweeper.setPower(0);
 
-
-            /* if(gamepad2.right_bumper){
-                double position = currentPosition + 0.05;
-                sweeperDump.setPosition(position);
+                //put minerals into dumper position
+                sweeperDump.setPosition(0.8);
+                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
+                telemetry.update();
             }
-            if(gamepad2.left_bumper){
-                double position = currentPosition - 0.05;
-                sweeperDump.setPosition(position);
-            }*/
 
+            if (gamepad2.x) {
+                //sweeper.setPower(0);
+
+                //halfway sweeper servo position
+                sweeperDump.setPosition(0.45);
+                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
+                telemetry.update();
+            }
+
+            if (gamepad2.a){
+
+                //Putting sweeper down
+                sweeperDump.setPosition(0.27);
+                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
+                telemetry.update();
+            }
 
             //when right bumper pressed: increase position of sweeper servo by 0.05
             //when left bumper pressed: decrease position of sweeper servo by 0.05
@@ -277,241 +264,11 @@ public class TeleOp12907 extends LinearOpMode {
                 leftBumperPressed = false;
             }
 
-
-            //using triggers to sweep (forwards & reverse)
-           /*double powerSweep = gamepad2.right_trigger;
-            sweeper.setPower(powerSweep);
-            telemetry.addData("Sweeping Power: ", powerSweep);
-            telemetry.update();
-
-            powerSweep = gamepad2.left_trigger;
-            sweeper.setPower(-powerSweep);
-            telemetry.addData("Sweeping Power: ", powerSweep);
-            telemetry.update(); */
-
-            //putting minerals from sweeper into dumper
-            if (gamepad2.y){
-                //sweeper.setPower(0);
-
-                //put minerals into dumper position
-                sweeperDump.setPosition(0.8);
-                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad2.x) {
-                //sweeper.setPower(0);
-
-                //halfway sweeper servo position
-                sweeperDump.setPosition(0.45);
-                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad2.a){
-
-                //Putting sweeper down
-                sweeperDump.setPosition(0.27);
-                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
-                telemetry.update();
-
-                /*while (true) {
-                    sweeper.setPower(1);
-
-                    if (gamepad2.x){
-                        break;
-                    }
-                }*/
-            }
-
-
-
-            //sweeping in minerals using right bumper (toggled on and off)
-           /* boolean powerEnableIn = false;
-            boolean rightBumperPressed = false;
-
-            if(gamepad2.right_bumper){
-                if (!rightBumperPressed) {
-                    powerEnableIn = !powerEnableIn;
-                    rightBumperPressed = true;
-                } else { }
-             } else {
-                rightBumperPressed = false;
-            }
-
-            if(powerEnableIn) {
-                sweeper.setPower(1.0);
-            } else {
-                //sweeper.setPower(0.0);
-            }
-
-
-            //sweeping out minerals using left bumper (toggled on and off)
-            boolean powerEnableOut = false;
-            boolean leftBumperPressed = false;
-
-            if(gamepad2.left_bumper){
-                if(!leftBumperPressed) {
-                    powerEnableOut = !powerEnableOut;
-                    leftBumperPressed = true;
-                } else { }
-            } else {
-                leftBumperPressed = false;
-            }
-
-            if(powerEnableOut) {
-                sweeper.setPower(-1.0);
-            } else {
-                //sweeper.setPower(0.0);
-            }*/
-
-
-
-            //GAMEPAD 1:
-            //dumping minerals into lander - 3 stages (down, lifted halfway, up&dump)
-            if (gamepad1.y){
-                mineralDump.setPosition(EXTENDED_POSITION);
-                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
-                telemetry.update();
-            }
-
-            if(gamepad1.x) {
-                mineralDump.setPosition(HALF_EXTENDED_POSITION);
-                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad1.a){
-                mineralDump.setPosition(RETRACTED_POSITION);
-                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad1.b) {
-                mineralDump.setPosition(0.3);
-                telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
-                telemetry.update();
-
-            }
-
-
-
-
-
-
-
-
-
-            //boom.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
-            // boom.setPower(0);
-
-            //Boom motor extend and retract -->
-            /*if (gamepad2.a){
-
-                    telemetry.addData("Which pressed: ", "a");
-                telemetry.addData("Boom Current Position before moving: ", boom.getCurrentPosition());
-                    telemetry.update();
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                boom.setTargetPosition(boom.getCurrentPosition() + 100);
-                boom.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                boom.setPower(0.5);
-
-               while(boom.isBusy()){
-
-                }
-
-                telemetry.addData("Boom Current Position: ", boom.getCurrentPosition());
-                telemetry.update();
-                
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-            }
-
-
-
-
-            if (gamepad2.b){
-
-                telemetry.addData("Which pressed: ", "b");
-                telemetry.addData("Boom Current Position before moving: ", boom.getCurrentPosition());
-                telemetry.update();
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                boom.setTargetPosition(boom.getCurrentPosition() - 100);
-                boom.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                boom.setPower(0.5);
-
-                while(boom.isBusy()){
-
-                }
-
-                telemetry.addData("Boom Current Position: ", boom.getCurrentPosition());
-                telemetry.update();
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                telemetry.addData("Which pressed: ", "b");
-                telemetry.update();
-
-               try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-                boom.setTargetPosition(500);
-                boom.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                boom.setPower(-0.5);
-
-                while(boom.isBusy()){
-                    telemetry.addData("Boom Current Position: ", boom.getCurrentPosition());
-                    telemetry.update();
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-
-            } */
-
-
-
-
-            //dropping the marker -->
-            /*if(gamepad2.y) {
-                markerDropper.setPosition(LATCH_EXTENDED_POSITION);
-            }
-            if(gamepad2.b){
-                markerDropper.setPosition(LATCH_RETRACTED_POSITION);
-            } */
-
             telemetry.addData("Power Left: ", powerLeft);
             telemetry.addData("Power Right: ", powerRight);
             telemetry.update();
 
             idle();
-
-
 
         }
     }
