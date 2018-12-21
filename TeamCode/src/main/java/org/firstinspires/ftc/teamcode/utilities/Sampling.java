@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 import org.firstinspires.ftc.teamcode.helper.SensorHelper;
 
@@ -19,22 +20,87 @@ public class Sampling {
                                        Servo leftKnocker, ColorSensor knockerColor) {
 
         //moving forward to minerals to begin detection
-        double powerRight = 0.25;
+        //WITHOUT DISTANCE SENSOR - (fixed distance)
+        /*double powerRight = 0.25;
         double powerLeft = 0.25;
         double targetPositionLeft = 17.5;
         double targetPositionRight = 17.5;
         double timeoutS = 5;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
                 targetPositionLeft, timeoutS, telemetry);
+        try {
+            Thread.sleep(SLEEP_TIME_1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
+
+
+
+
+        //USING DISTANCE SENSOR - going forwards to minerals:
+        // (TO DO: change the distance sensor to a proximity/color sensor)
+
+        //Going forward 15" then measuring distance
+        //If measured distance is greater than 3"(tgtDistToMineral)
+        //then set a new target position of the 'measured distance' minus 'tgtDistToMineral'
+        //pass this difference into the moving with encoders method
+
+        double tgtDistToMineral = 3;
+
+        double powerRight = 0.25;
+        double powerLeft = 0.25;
+        double targetPositionLeft = 15;
+        double targetPositionRight = 15;
+        double timeoutS = 5;
+        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                targetPositionLeft, timeoutS, telemetry);
         try {
             Thread.sleep(SLEEP_TIME_1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        //if distance is more than 6 cm from the mineral, go forwards until reached 6 cm
-        //motorHelper.forwardWithDistance(frontRight,frontLeft,backRight,backLeft, 0.25, 6, distance, telemetry);
+        double distanceMeasured = (distance.getDistance(DistanceUnit.INCH));
+
+        telemetry.addData("Distance from mineral: ", distanceMeasured);
+        telemetry.update();
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+        if(distanceMeasured > tgtDistToMineral) {
+            double newTargetPosition = (distanceMeasured - tgtDistToMineral);
+            telemetry.addData("Distance to reach mineral: ", newTargetPosition);
+            telemetry.update();
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            powerRight = 0.25;
+            powerLeft = 0.25;
+            targetPositionLeft = newTargetPosition;
+            targetPositionRight = newTargetPosition;
+            timeoutS = 5;
+            motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                    targetPositionLeft, timeoutS, telemetry);
+
+        } else {
+            telemetry.addData("Distance from mineral: ", "sufficient!");
+            telemetry.update();
+            try {
+                Thread.sleep(SLEEP_TIME_1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            //do nothing and move on to knocking the minerals
+        }
+
 
         // Detect whether center block is yellow
         boolean whiteMiddle = sensorHelper.isWhite(middleColor, distance, telemetry);
@@ -159,11 +225,18 @@ public class Sampling {
 
     }
 
+
+
+
+
+
+
     /*
     3 methods below are for Servo & Motor positions for knocking the gold cube when it's in the middle, left, or right:
      */
 
     private void knockMiddleYellow(MotorHelper motorHelper, DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, Telemetry telemetry) {
+
         double powerRight = 0.25;
         double powerLeft = 0.25;
         double targetPositionLeft = 4;

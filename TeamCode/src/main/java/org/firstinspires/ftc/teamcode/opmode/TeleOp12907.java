@@ -108,6 +108,7 @@ public class TeleOp12907 extends LinearOpMode {
         if (powerLeft != 0) {
             frontLeft.setPower(Math.pow(powerLeft * powerScaleFactor , 3)/Math.abs(powerLeft * powerScaleFactor));
             backLeft.setPower(Math.pow(powerLeft * powerScaleFactor, 3)/Math.abs(powerLeft * powerScaleFactor));
+
         } else {
             frontLeft.setPower(powerLeft);
             backLeft.setPower(powerLeft);

@@ -231,7 +231,6 @@ public class MotorHelper {
 
 
 
-
     public void forwardWithDistance(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft,
                                     double power, double distance, DistanceSensor dist, Telemetry telemetry){
         while(dist.getDistance(DistanceUnit.CM) > distance){
