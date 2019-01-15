@@ -66,6 +66,8 @@ public class TeleOp12907 extends LinearOpMode {
         slide.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         rightKnocker.setPosition(1);
 
         try {
@@ -140,6 +142,41 @@ public class TeleOp12907 extends LinearOpMode {
         boolean driveMode=false;
         boolean driveInput=false;
         MotorHelper motorHelper = new MotorHelper();
+
+        boolean threadRunning = false;
+
+
+
+        class SweeperThread extends Thread{
+            public void run (){
+                while(true){
+                    sweeper.setPower(1);
+                    if(gamepad2.right_bumper){
+                        sweeper.setPower(0);
+                        break;
+                    }
+                }
+            }
+
+        }
+
+        /*class SlideThread extends Thread{
+            public void run(){
+                mineralDump.setPosition(0.3);
+                slide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                slide.setPower(0.9);
+                slide.setTargetPosition(0);
+                slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                mineralDump.setPosition(RETRACTED_POSITION);
+                sweeperDump.setPosition(0.8);
+
+            }
+        }*/
+
+        Thread ourSweeperThread = new SweeperThread();
+
+        //Thread ourSlideThread = new SlideThread();
+
         while (opModeIsActive()) {
 
 
@@ -149,19 +186,19 @@ public class TeleOp12907 extends LinearOpMode {
             tankDrive(powerRight, powerLeft);
 
             //dumping minerals into lander - 3 stages (down, lifted halfway, up&dump)
-            if (gamepad1.y){
+            if (gamepad1.y) {
                 mineralDump.setPosition(EXTENDED_POSITION);
                 telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
                 telemetry.update();
             }
 
-            if(gamepad1.x) {
+            if (gamepad1.x) {
                 mineralDump.setPosition(HALF_EXTENDED_POSITION);
                 telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
                 telemetry.update();
             }
 
-            if (gamepad1.a){
+            if (gamepad1.a) {
                 mineralDump.setPosition(RETRACTED_POSITION);
                 telemetry.addData("Mineral dump position: ", mineralDump.getPosition());
                 telemetry.update();
@@ -178,10 +215,10 @@ public class TeleOp12907 extends LinearOpMode {
             //GAMEPAD 2:
 
             //servo (hook) latching -->
-            if (gamepad2.dpad_left){
+            if (gamepad2.dpad_left) {
                 latch.setPosition(EXTENDED_POSITION);
             }
-            if (gamepad2.dpad_right){
+            if (gamepad2.dpad_right) {
                 latch.setPosition(RETRACTED_POSITION);
             }
 
@@ -191,46 +228,74 @@ public class TeleOp12907 extends LinearOpMode {
 
             //using triggers to put the slide out and in
             powerSlide = gamepad2.right_trigger;
-            slide.setPower(powerSlide * 0.7);
+            slide.setPower(powerSlide * 0.9);
 
             powerSlide = gamepad2.left_trigger;
-            slide.setPower(-(powerSlide * 0.7));
+            slide.setPower(-(powerSlide * 0.9));
 
             //using the right joystick to sweep in and out minerals
             double powerSweep = gamepad2.right_stick_y;
             sweeper.setPower(powerSweep);
 
+
             //putting minerals from sweeper into dumper
-            if (gamepad2.y){
-                //sweeper.setPower(0);
-
-                //put minerals into dumper position
-                sweeperDump.setPosition(0.8);
-                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad2.x) {
-                //sweeper.setPower(0);
-
-                //halfway sweeper servo position
-                sweeperDump.setPosition(0.45);
-                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
-                telemetry.update();
-            }
-
-            if (gamepad2.a){
-
+            if (gamepad2.a) {
                 //Putting sweeper down
                 sweeperDump.setPosition(0.27);
                 telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
                 telemetry.update();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+
+            if (gamepad2.x) {
+                //halfway sweeper servo position
+                sweeperDump.setPosition(0.45);
+                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
+                telemetry.update();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (gamepad2.y) {
+                //put minerals into mineral dumper
+                sweeperDump.setPosition(0.8);
+                telemetry.addData("Sweeper dump position: ", sweeperDump.getPosition());
+                telemetry.update();
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(gamepad2.right_bumper){
+                if(!threadRunning){
+                    ourSweeperThread.start();
+                    threadRunning=true;
+                }
+                else{
+                    threadRunning=false;
+                }
+            }
+
+            /*if(gamepad2.left_bumper){
+                ourSlideThread.start();
+            }*/
+
+
+
 
             //when right bumper pressed: increase position of sweeper servo by 0.05
             //when left bumper pressed: decrease position of sweeper servo by 0.05
 
-            double currentPosition = sweeperDump.getPosition();
+            /*double currentPosition = sweeperDump.getPosition();
 
             boolean rightBumperPressed = false;
             boolean leftBumperPressed = false;
@@ -263,7 +328,7 @@ public class TeleOp12907 extends LinearOpMode {
                 else {}
             } else {
                 leftBumperPressed = false;
-            }
+            }*/
 
             telemetry.addData("Power Left: ", powerLeft);
             telemetry.addData("Power Right: ", powerRight);

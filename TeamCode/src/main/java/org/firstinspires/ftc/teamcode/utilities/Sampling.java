@@ -21,7 +21,7 @@ public class Sampling {
 
         //moving forward to minerals to begin detection
         //WITHOUT DISTANCE SENSOR - (fixed distance)
-        /*double powerRight = 0.25;
+        double powerRight = 0.25;
         double powerLeft = 0.25;
         double targetPositionLeft = 17.5;
         double targetPositionRight = 17.5;
@@ -32,21 +32,19 @@ public class Sampling {
             Thread.sleep(SLEEP_TIME_1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
 
 
 
 
 
         //USING DISTANCE SENSOR - going forwards to minerals:
-        // (TO DO: change the distance sensor to a proximity/color sensor)
-
         //Going forward 15" then measuring distance
         //If measured distance is greater than 3"(tgtDistToMineral)
         //then set a new target position of the 'measured distance' minus 'tgtDistToMineral'
         //pass this difference into the moving with encoders method
 
-        double tgtDistToMineral = 3;
+       /* double tgtDistToMineral = 3;
 
         double powerRight = 0.25;
         double powerLeft = 0.25;
@@ -99,7 +97,7 @@ public class Sampling {
                 e.printStackTrace();
             }
             //do nothing and move on to knocking the minerals
-        }
+        }*/
 
 
         // Detect whether center block is yellow
@@ -130,7 +128,7 @@ public class Sampling {
             leftArm.setPosition(0.6);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(SLEEP_TIME_1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -324,8 +322,8 @@ public class Sampling {
             e.printStackTrace();
         }
 
-
-        rightArm.setPosition(0);
+        //rightArm.setPosition(0);
+        rightArm.setPosition(0.05);
 
         try {
             Thread.sleep(SLEEP_TIME_1000);
@@ -340,8 +338,8 @@ public class Sampling {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         rightArm.setPosition(0.6);
+        //rightArm.setPosition(0.75);
 
         try {
             Thread.sleep(SLEEP_TIME_1000);

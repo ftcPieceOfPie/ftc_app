@@ -80,6 +80,9 @@ import java.util.List;
 @Autonomous(name = "Autonomous 2019", group = "autonomous")
 public class Autonomous12907 extends LinearOpMode {
 
+
+    final long SLEEP_TIME_250 = 250;
+
     private static final String TFOD_MODEL_ASSET = "RoverRuckus.tflite";
     private static final String LABEL_GOLD_MINERAL = "Gold Mineral";
     private static final String LABEL_SILVER_MINERAL = "Silver Mineral";
@@ -118,6 +121,7 @@ public class Autonomous12907 extends LinearOpMode {
     ColorSensor markerColor;
     ColorSensor middleColor;
     DistanceSensor distance;
+    boolean turnRight;
 
     //Initializes motors from the hardware map
 
@@ -148,6 +152,16 @@ public class Autonomous12907 extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftActuator.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        SensorHelper sensorHelper = new SensorHelper();
+        boolean turnRight = sensorHelper.isWhite(markerColor, distance, telemetry);
+        telemetry.addData("turnRight: ",turnRight);
+        telemetry.update();
+        try {
+            Thread.sleep(SLEEP_TIME_250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -167,7 +181,6 @@ public class Autonomous12907 extends LinearOpMode {
         Landing landing = new Landing();
         Sampling sampling = new Sampling();
         Marker marker = new Marker();
-        //Parking parking = new Parking();
         MotorHelper motorHelper = new MotorHelper();
         SensorHelper sensorHelper = new SensorHelper();
 
@@ -182,7 +195,7 @@ public class Autonomous12907 extends LinearOpMode {
             telemetry.addData("Yes", "Tensor Flow can be used");
             //added rest to view telemetry
             try {
-                Thread.sleep(250);
+                Thread.sleep(SLEEP_TIME_250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -209,7 +222,7 @@ public class Autonomous12907 extends LinearOpMode {
             //initializing sweeper dump inwards for start of autonomous
             sweeperDump.setPosition(0.8);
             try {
-                Thread.sleep(250);
+                Thread.sleep(SLEEP_TIME_250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -227,12 +240,16 @@ public class Autonomous12907 extends LinearOpMode {
             }
 
             //moving to depot - WORKING
-            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, markerColor, distance, sweeperDump, sweeper);
-
+            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, distance, sweeperDump, sweeper, turnRight);
         }
     }
 
-    //ConceptTensorFlowObjectDetection:
+
+
+
+
+
+
 
     /*
     Initialize the Vuforia localization engine.
@@ -258,6 +275,20 @@ public class Autonomous12907 extends LinearOpMode {
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_GOLD_MINERAL, LABEL_SILVER_MINERAL);
     }
+
+
+
+    /**
+    Detecting the gold mineral using modified tensor flow
+     A picture of the right two minerals are taken
+     The gold mineral and silver mineral are initially set to a value of -1
+     The goldmineralX is either -1 if its a left most mineral or a positive number if its center or right
+     & the silverMineralX will be a positive number as there will always be at least one silver mineral (once picture taken)
+        First off, the silver mineral value is checked to see that it is not -1 (the silver mineral must be assigned a value- as there are two of them)
+        If the gold mineral has a value of -1, it means it has not been assigned a 1 or 2 value (center of right position); so it is in the left position
+        If the gold mineral's value is less than the silver mineral's value; it means that the gold mineral has a value of 1 & is in the center position
+        By process of elimination, the gold mineral would be in the right position if not in the left or center position
+     */
 
     public String detectYellowPosition() {
         ElapsedTime runTime = new ElapsedTime();
@@ -289,9 +320,7 @@ public class Autonomous12907 extends LinearOpMode {
                                 goldMineralX = (int) recognition.getLeft();
                             } else if (silverMineral1X == -1) {
                                 silverMineral1X = (int) recognition.getLeft();
-                            } //else {
-                                //silverMineral2X = (int) recognition.getLeft();
-                            //}
+                            }
                         }
                         if (silverMineral1X != -1 ) {
                             if (goldMineralX ==-1) {
@@ -311,23 +340,19 @@ public class Autonomous12907 extends LinearOpMode {
                     }
 
                     telemetry.update();
-                    /*try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }*/
+
 
                     //Breaking tensor flow if objects detected is 3 or if it times out (after 2 seconds)
                     if (updatedRecognitions.size() == 2 || runTime.milliseconds() > 3000) {
+                        telemetry.addData("Position: ", yellowPosition);
                         telemetry.addData("Objects Detected: ", updatedRecognitions.size());
                         telemetry.addData("Elapsed Time: ", runTime.milliseconds());
                         telemetry.update();
-                        //sleep to view telemetry
-                        /*try {
-                            Thread.sleep(2000);
+                        try {
+                            Thread.sleep(SLEEP_TIME_250);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }*/
+                        }
                         break;
 
                     }

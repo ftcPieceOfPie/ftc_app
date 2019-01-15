@@ -15,7 +15,7 @@ public class Marker {
 
     final long SLEEP_TIME_250 = 250;
 
-    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, ColorSensor color, DistanceSensor distance, Servo sweeperDump, DcMotor sweeper) {
+    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, DistanceSensor distance, Servo sweeperDump, DcMotor sweeper, boolean turnRight) {
 
         //going back 8 inches
         double powerRight = -0.5;
@@ -55,17 +55,19 @@ public class Marker {
         }
 
 
+        // the color sensing of the chip is now done in initialization of autonomous
+
         //detect if the chip is white or black with color sensor
         //turnRight is a boolean, it will read either true or false
-        SensorHelper sensorHelper = new SensorHelper();
-        boolean turnRight = sensorHelper.isWhite(color, distance, telemetry);
+        /*SensorHelper sensorHelper = new SensorHelper();
+        boolean turnRight = sensorHelper.isWhite(colorSensor, distance, telemetry);
         telemetry.addData("turnRight: ",turnRight);
         telemetry.update();
         try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //if it's white (true), turn right
         if(turnRight){
