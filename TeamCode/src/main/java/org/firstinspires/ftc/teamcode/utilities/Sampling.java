@@ -11,17 +11,19 @@ import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 import org.firstinspires.ftc.teamcode.helper.SensorHelper;
 
 public class Sampling {
-    final long SLEEP_TIME_1000 = 1000;
+    //Commented on 01/21 - from 1000 to 500
+    final long SLEEP_TIME_500 = 500;
+    final long SLEEP_TIME_250 = 250;
     final double EXTEND_OUT = 0.55;
     final double EXTEND_IN = 0.2;
 
     public void forwardWithColorSensor(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, SensorHelper sensorHelper,
-                                       Telemetry telemetry, ColorSensor middleColor, DistanceSensor distance, Servo rightArm, Servo leftArm, Servo rightKnocker,
+                                       Telemetry telemetry, ColorSensor middleColor, DistanceSensor distanceSensor, Servo rightArm, Servo leftArm, Servo rightKnocker,
                                        Servo leftKnocker, ColorSensor knockerColor) {
 
         //moving forward to minerals to begin detection
         //WITHOUT DISTANCE SENSOR - (fixed distance)
-        double powerRight = 0.25;
+        /*double powerRight = 0.25;
         double powerLeft = 0.25;
         double targetPositionLeft = 17.5;
         double targetPositionRight = 17.5;
@@ -29,10 +31,10 @@ public class Sampling {
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
                 targetPositionLeft, timeoutS, telemetry);
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 
@@ -44,7 +46,9 @@ public class Sampling {
         //then set a new target position of the 'measured distance' minus 'tgtDistToMineral'
         //pass this difference into the moving with encoders method
 
-       /* double tgtDistToMineral = 3;
+        //double tgtDistToMineral = 2;
+        double tgtDistToMineral = 2.15;
+
 
         double powerRight = 0.25;
         double powerLeft = 0.25;
@@ -54,12 +58,12 @@ public class Sampling {
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
                 targetPositionLeft, timeoutS, telemetry);
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        double distanceMeasured = (distance.getDistance(DistanceUnit.INCH));
+        double distanceMeasured = (distanceSensor.getDistance(DistanceUnit.INCH));
 
         telemetry.addData("Distance from mineral: ", distanceMeasured);
         telemetry.update();
@@ -92,23 +96,27 @@ public class Sampling {
             telemetry.addData("Distance from mineral: ", "sufficient!");
             telemetry.update();
             try {
-                Thread.sleep(SLEEP_TIME_1000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             //do nothing and move on to knocking the minerals
-        }*/
+        }
+
+
+
 
 
         // Detect whether center block is yellow
-        boolean whiteMiddle = sensorHelper.isWhite(middleColor, distance, telemetry);
+        boolean whiteMiddle = sensorHelper.isWhite(middleColor, telemetry);
         telemetry.addData("middleColor: ", whiteMiddle);
         telemetry.update();
-        try {
-            Thread.sleep(SLEEP_TIME_1000);
+        //changed time from 500 to 250
+        /*try {
+            Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
         if (!whiteMiddle) {
             knockMiddleYellow(motorHelper, frontRight, frontLeft, backRight, backLeft, telemetry);
@@ -119,7 +127,7 @@ public class Sampling {
             leftKnocker.setPosition(0.825);
 
             try {
-                Thread.sleep(SLEEP_TIME_1000);
+                Thread.sleep(SLEEP_TIME_500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -128,14 +136,15 @@ public class Sampling {
             leftArm.setPosition(0.6);
 
             try {
-                Thread.sleep(SLEEP_TIME_1000);
+                Thread.sleep(SLEEP_TIME_500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            boolean whiteLeft = sensorHelper.isWhite(knockerColor, distance, telemetry);
+            boolean whiteLeft = sensorHelper.isWhite(knockerColor, telemetry);
             telemetry.addData("leftColor: ", whiteLeft);
             telemetry.update();
+
             if (!whiteLeft) {
                 //if left is yellow cube, left arm goes knocks off cube
                 knockLeftYellow(leftKnocker, leftArm);
@@ -143,7 +152,6 @@ public class Sampling {
             } else {
                 //else, the right side would have the cube, and it would knock it off with the right arm/knocker
                 knockRightYellow(leftKnocker, leftArm, rightArm, rightKnocker);
-
             }
 
             //in case it doesn't go back up, setting both arms back up
@@ -174,7 +182,7 @@ public class Sampling {
                 targetPositionLeft, timeoutS, telemetry);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -257,15 +265,16 @@ public class Sampling {
         leftKnocker.setPosition(0.7);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        leftArm.setPosition(0.8);
+        //leftArm.setPosition(0.8);
+        leftArm.setPosition(0.75);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -273,7 +282,7 @@ public class Sampling {
         leftKnocker.setPosition(1);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -281,7 +290,7 @@ public class Sampling {
         leftArm.setPosition(0.2);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -289,7 +298,7 @@ public class Sampling {
         leftKnocker.setPosition(0);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -300,7 +309,7 @@ public class Sampling {
         leftArm.setPosition(0.2);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -308,7 +317,7 @@ public class Sampling {
         leftKnocker.setPosition(0);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -317,32 +326,38 @@ public class Sampling {
         rightKnocker.setPosition(0.6);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         //rightArm.setPosition(0);
-        rightArm.setPosition(0.05);
+        rightArm.setPosition(0);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+
 
         rightKnocker.setPosition(0.2);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        rightArm.setPosition(0.6);
+
+        //arm coming back in positions:
+
+        rightArm.setPosition(0.8);
+        //rightArm.setPosition(0.6);
         //rightArm.setPosition(0.75);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -350,7 +365,7 @@ public class Sampling {
         rightKnocker.setPosition(1);
 
         try {
-            Thread.sleep(SLEEP_TIME_1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

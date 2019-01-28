@@ -34,7 +34,7 @@ public class SamplingBlue {
         }
 
         // Detect whether center block is yellow
-        boolean whiteMiddle = sensorHelper.isWhite(middleColor, distance, telemetry);
+        boolean whiteMiddle = sensorHelper.isWhite(middleColor, telemetry);
         telemetry.addData("middleColor: ", whiteMiddle);
         telemetry.update();
         if (!whiteMiddle) {
@@ -74,7 +74,7 @@ public class SamplingBlue {
                 e.printStackTrace();
             }
 
-            boolean whiteLeft = sensorHelper.isWhite(knockerColor, distance, telemetry);
+            boolean whiteLeft = sensorHelper.isWhite(knockerColor,telemetry);
             telemetry.addData("leftColor: ", whiteLeft);
             telemetry.update();
             if (!whiteLeft) {

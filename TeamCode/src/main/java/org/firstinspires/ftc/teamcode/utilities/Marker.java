@@ -15,7 +15,7 @@ public class Marker {
 
     final long SLEEP_TIME_250 = 250;
 
-    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, DistanceSensor distance, Servo sweeperDump, DcMotor sweeper, boolean turnRight) {
+    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, Servo sweeperDump, DcMotor sweeper, boolean turnRight) {
 
         //going back 8 inches
         double powerRight = -0.5;
@@ -42,10 +42,12 @@ public class Marker {
         }
 
         //going forwards 25 inches to wall
+        //Commented on 01/21 --> changing target positions 25 to 30
+        //Commented on 01/22 --> changing target positions 30 50 32
         powerRight = 0.5;
         powerLeft = 0.5;
-        targetPositionLeft = 25;
-        targetPositionRight = 25;
+        targetPositionLeft = 30;
+        targetPositionRight = 30;
         timeoutS = 6;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
         try {
@@ -93,24 +95,26 @@ public class Marker {
 
         //go forwards 4 feet to the DEPOT
         //subtract 5 inches for dropping marker with sweeper servo extended length
-        targetPositionLeft = (35);
-        targetPositionRight = (35);
+        //targetPositionLeft = (35);
+        //targetPositionRight = (35);
+        targetPositionLeft = (29);
+        targetPositionRight = (29);
         timeoutS = 6;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
 
         //drop marker with servo movements
-       double markerDropPositionDown = 0.28;
-       double markerDropPositionUp = 0.8;
+       double markerDropPositionDown = 0.4;
+       double markerDropPositionUp = 0.9;
 
         //timeoutS = 5000;
         motorHelper.markerDrop(sweeperDump, markerDropPositionDown, markerDropPositionUp, sweeper, telemetry);
 
-        try {
+        /*try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
 
@@ -118,8 +122,8 @@ public class Marker {
         //PARKING!!
         //if it's white (true), wall follower right
 
-        double craterTargetPosition = -60;
-
+        //double craterTargetPosition = -56;
+        double craterTargetPosition = -58;
         if(turnRight){
             powerRight = -0.6;
             powerLeft = -0.5;

@@ -115,12 +115,12 @@ public class Autonomous12907 extends LinearOpMode {
     DcMotor liftActuator;
     DcMotor sweeper;
     BNO055IMU imu;
-    DistanceSensor dist;
+    DistanceSensor distanceSensor;
     Orientation lastAngles;
     ColorSensor knockerColor;
     ColorSensor markerColor;
     ColorSensor middleColor;
-    DistanceSensor distance;
+    DistanceSensor distanceColor;
     boolean turnRight;
 
     //Initializes motors from the hardware map
@@ -138,13 +138,14 @@ public class Autonomous12907 extends LinearOpMode {
         leftArm = hardwareMap.get(Servo.class, "leftArm");
         rightKnocker = hardwareMap.get(Servo.class, "rightKnocker");
         leftKnocker = hardwareMap.get(Servo.class, "leftKnocker");
-        dist = hardwareMap.get(DistanceSensor.class, "sensorDistance");
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensorDistance");
         //markerDropper = hardwareMap.get(Servo.class, "markerDropper");
         sweeperDump = hardwareMap.get(Servo.class, "sweeperDump");
         markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
         middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
         knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
-        distance = hardwareMap.get(DistanceSensor.class, "middleColor");
+        distanceColor = hardwareMap.get(DistanceSensor.class, "middleColor");
+
         //Setting the direction of the motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -152,8 +153,10 @@ public class Autonomous12907 extends LinearOpMode {
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
         liftActuator.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //color sensing the color of the black/white chip to see which direction to turn
+        // depending on if the robot is on crater or depot side
         SensorHelper sensorHelper = new SensorHelper();
-        boolean turnRight = sensorHelper.isWhite(markerColor, distance, telemetry);
+        turnRight = sensorHelper.isWhite(markerColor, telemetry);
         telemetry.addData("turnRight: ",turnRight);
         telemetry.update();
         try {
@@ -162,6 +165,7 @@ public class Autonomous12907 extends LinearOpMode {
             e.printStackTrace();
         }
 
+        //Initializing the IMU
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -176,73 +180,82 @@ public class Autonomous12907 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        initialize();
 
-        Landing landing = new Landing();
-        Sampling sampling = new Sampling();
-        Marker marker = new Marker();
-        MotorHelper motorHelper = new MotorHelper();
-        SensorHelper sensorHelper = new SensorHelper();
+        try {
 
-        //TensorCode:
-        // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-        // first.
-        initVuforia();
-        boolean canUseTensor;
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            initTfod();
-            canUseTensor = true;
-            telemetry.addData("Yes", "Tensor Flow can be used");
-            //added rest to view telemetry
-            try {
-                Thread.sleep(SLEEP_TIME_250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } else {
-            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-            canUseTensor = false;
-        }
+            initialize();
 
-        waitForStart();
+            Landing landing = new Landing();
+            Sampling sampling = new Sampling();
+            Marker marker = new Marker();
+            MotorHelper motorHelper = new MotorHelper();
+            SensorHelper sensorHelper = new SensorHelper();
 
-        if (opModeIsActive()) {
-            //calling tensor (same code as ConceptTensorFlowObjectDetection)
-            String yellowPosition = "Unknown";
-            if (canUseTensor) {
-                yellowPosition = detectYellowPosition();
-            }
-
-
-        /*ElapsedTime runtime = new ElapsedTime();
-        runtime.reset();
-        while (runtime.milliseconds() > 29000) {
-        }*/
-
-            //initializing sweeper dump inwards for start of autonomous
-            sweeperDump.setPosition(0.8);
-            try {
-                Thread.sleep(SLEEP_TIME_250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-            //landing then unlatching - WORKING
-            landing.drop(liftActuator, latch, motorHelper, telemetry);
-
-            //moving forward for Sampling - WORKING
-            if (yellowPosition.equalsIgnoreCase("Unknown")) {
-                sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distance, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
-
+            //TensorCode:
+            // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
+            // first.
+            initVuforia();
+            boolean canUseTensor;
+            if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                initTfod();
+                canUseTensor = true;
+                telemetry.addData("Yes", "Tensor Flow can be used");
+                //added rest to view telemetry
+                try {
+                    Thread.sleep(SLEEP_TIME_250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else {
-                sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distance, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);
+                telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+                canUseTensor = false;
             }
 
-            //moving to depot - WORKING
-            marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, distance, sweeperDump, sweeper, turnRight);
+
+            waitForStart();
+
+            if (opModeIsActive()) {
+                //calling tensor (same code as ConceptTensorFlowObjectDetection)
+                String yellowPosition = "Unknown";
+                if (canUseTensor) {
+                    yellowPosition = detectYellowPosition();
+                }
+
+
+                //initializing sweeper dump inwards for start of autonomous
+                sweeperDump.setPosition(1);
+                try {
+                    Thread.sleep(SLEEP_TIME_250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                //landing then unlatching - WORKING
+                landing.drop(liftActuator, latch, motorHelper, telemetry);
+
+                //moving forward for Sampling - WORKING
+                if (yellowPosition.equalsIgnoreCase("Unknown") || !turnRight) {
+                    sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distanceSensor, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
+
+                } else {
+                    sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distanceSensor, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);
+                }
+
+                //moving to depot - WORKING
+                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, sweeperDump, sweeper, turnRight);
+            }
+        } catch (Exception bad){
+            telemetry.addData("EXCEPTION:", bad.toString());
+            telemetry.update();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
+
 
 
 
@@ -344,15 +357,15 @@ public class Autonomous12907 extends LinearOpMode {
 
                     //Breaking tensor flow if objects detected is 3 or if it times out (after 2 seconds)
                     if (updatedRecognitions.size() == 2 || runTime.milliseconds() > 3000) {
-                        telemetry.addData("Position: ", yellowPosition);
+                       /* telemetry.addData("Position: ", yellowPosition);
                         telemetry.addData("Objects Detected: ", updatedRecognitions.size());
                         telemetry.addData("Elapsed Time: ", runTime.milliseconds());
                         telemetry.update();
                         try {
-                            Thread.sleep(SLEEP_TIME_250);
+                            Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }
+                        }*/
                         break;
 
                     }

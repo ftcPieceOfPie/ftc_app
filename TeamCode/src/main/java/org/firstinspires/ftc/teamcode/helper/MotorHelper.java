@@ -17,7 +17,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class MotorHelper {
 
-
+    //changed from 500 to 250
+    final long SLEEP_TIME_500 = 250;
 
     Orientation lastAngles;
     double globalAngle;
@@ -144,7 +145,7 @@ public class MotorHelper {
         telemetry.addData("Servo Position =", latchPosition);
         telemetry.update();
         try {
-            Thread.sleep((1000));
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -197,8 +198,8 @@ public class MotorHelper {
         /*frontRight.setPower(Math.abs(powerRight));
         backRight.setPower(Math.abs(powerRight));
         frontLeft.setPower(Math.abs(powerLeft));
-        backLeft.setPower(Math.abs(powerLeft)); */
         backLeft.setPower(Math.abs(powerLeft));
+        backLeft.setPower(Math.abs(powerLeft));*/
         frontRight.setPower((powerRight));
         backRight.setPower((powerRight));
         frontLeft.setPower((powerLeft));
@@ -213,11 +214,12 @@ public class MotorHelper {
                     backLeft.getCurrentPosition(),
                     backRight.getCurrentPosition());
             telemetry.update();
-            try {
+            //Commented on 01/21
+            /*try {
                 Thread.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
+            }*/
         }
 
         //stop motors
@@ -260,7 +262,7 @@ public class MotorHelper {
         sweeperDump.setPosition(Range.clip(sweeperDumpPositionDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -275,7 +277,7 @@ public class MotorHelper {
         sweeperDump.setPosition(Range.clip(sweeperDumpPositionUp, Servo.MIN_POSITION, Servo.MAX_POSITION));
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(SLEEP_TIME_500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

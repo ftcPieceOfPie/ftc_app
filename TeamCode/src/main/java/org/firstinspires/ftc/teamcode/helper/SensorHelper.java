@@ -30,7 +30,7 @@ public class SensorHelper {
             return true;
         }*/
 
-    public boolean isWhite(ColorSensor color, DistanceSensor distance, Telemetry telemetry) {
+    public boolean isWhite(ColorSensor color,  Telemetry telemetry) {
         float hsvValues[] = {0F, 0F, 0F};
 
         final float values[] = hsvValues;
@@ -49,10 +49,6 @@ public class SensorHelper {
                 hsvValues);
 
         // send the info back to driver station using telemetry function.
-        telemetry.addData("Distance (cm)",
-                String.format(Locale.US, "%.02f", distance.getDistance(DistanceUnit.CM)));
-        telemetry.addData("Distance (mm)",
-                String.format(Locale.US, "%.02f", distance.getDistance(DistanceUnit.MM)));
         telemetry.addData("Alpha", color.alpha());
         telemetry.addData("Red  ", color.red());
         telemetry.addData("Green", color.green());
