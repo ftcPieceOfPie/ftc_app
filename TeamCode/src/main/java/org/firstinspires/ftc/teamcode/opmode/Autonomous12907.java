@@ -76,6 +76,7 @@ import org.firstinspires.ftc.teamcode.utilities.Sampling;
 import java.util.List;
 
 //Adding Source Code to GitHub
+//League championship code didnt' have a consistent autonomous
 
 @Autonomous(name = "Autonomous 2019", group = "autonomous")
 public class Autonomous12907 extends LinearOpMode {

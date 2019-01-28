@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 import org.firstinspires.ftc.teamcode.helper.SensorHelper;
 
+//sampling of autonomous
 public class Sampling {
     //Commented on 01/21 - from 1000 to 500
     final long SLEEP_TIME_500 = 500;

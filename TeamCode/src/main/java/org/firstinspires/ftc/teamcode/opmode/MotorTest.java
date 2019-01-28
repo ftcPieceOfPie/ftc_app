@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 
 @Autonomous(name = "Motor Test", group = "autonomous")
 public class MotorTest extends LinearOpMode {
+//this program tests the drive train motors to go in a straight line
 
     //Naming the motors
     DcMotor frontLeft;

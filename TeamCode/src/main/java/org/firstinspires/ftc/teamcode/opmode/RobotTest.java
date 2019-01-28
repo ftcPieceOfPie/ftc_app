@@ -20,6 +20,8 @@ This program tests robot servos, motors, and sensors (they are all assigned to b
 @TeleOp(name = "Robot Test", group = "teleop")
 public class RobotTest extends LinearOpMode {
 
+    //Add telemetries where needed!
+
     //Naming the motors
     DcMotor backLeft;
     DcMotor frontRight;
