@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -18,9 +19,8 @@ import org.firstinspires.ftc.teamcode.utilities.Parking;
 import org.firstinspires.ftc.teamcode.utilities.Sampling;
 import org.firstinspires.ftc.teamcode.utilities.SamplingBlue;
 
-/**
- * Created by Twins on 11/17/18.
- */
+
+@Disabled
 @Autonomous(name = "AutonomousBlue 2019", group = "autonomous")
 
 public class AutonomousBlue12907 extends LinearOpMode{

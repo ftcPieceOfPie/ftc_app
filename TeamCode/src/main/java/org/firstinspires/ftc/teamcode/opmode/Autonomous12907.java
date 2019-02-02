@@ -76,7 +76,6 @@ import org.firstinspires.ftc.teamcode.utilities.Sampling;
 import java.util.List;
 
 //Adding Source Code to GitHub
-//League championship code didnt' have a consistent autonomous
 
 @Autonomous(name = "Autonomous 2019", group = "autonomous")
 public class Autonomous12907 extends LinearOpMode {
@@ -121,6 +120,7 @@ public class Autonomous12907 extends LinearOpMode {
     ColorSensor knockerColor;
     ColorSensor markerColor;
     ColorSensor middleColor;
+    ColorSensor rightKnockerColor;
     DistanceSensor distanceColor;
     boolean turnRight;
 
@@ -146,6 +146,7 @@ public class Autonomous12907 extends LinearOpMode {
         middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
         knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
         distanceColor = hardwareMap.get(DistanceSensor.class, "middleColor");
+        rightKnockerColor = hardwareMap.get(ColorSensor.class, "rightKnockerColor");
 
         //Setting the direction of the motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -183,7 +184,6 @@ public class Autonomous12907 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         try {
-
             initialize();
 
             Landing landing = new Landing();
@@ -236,8 +236,9 @@ public class Autonomous12907 extends LinearOpMode {
                 landing.drop(liftActuator, latch, motorHelper, telemetry);
 
                 //moving forward for Sampling - WORKING
+                //this disables tensorFlow for the crater side - as it will only use color sensing
                 if (yellowPosition.equalsIgnoreCase("Unknown") || !turnRight) {
-                    sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distanceSensor, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor);
+                    sampling.forwardWithColorSensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, middleColor, distanceSensor, rightArm, leftArm, rightKnocker, leftKnocker, knockerColor, rightKnockerColor);
 
                 } else {
                     sampling.forwardWithTensor(frontRight, frontLeft, backRight, backLeft, motorHelper, sensorHelper, telemetry, distanceSensor, rightArm, leftArm, rightKnocker, leftKnocker, yellowPosition);

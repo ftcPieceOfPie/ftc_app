@@ -11,7 +11,7 @@ package org.firstinspires.ftc.teamcode.helper;
 
         import java.util.Locale;
 
-//color sensor helper
+
 public class SensorHelper {
     /*
     Not needed color sensing

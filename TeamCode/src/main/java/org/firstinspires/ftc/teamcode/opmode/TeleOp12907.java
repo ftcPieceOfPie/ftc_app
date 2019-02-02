@@ -15,7 +15,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 
-//TeleOp code for gamepads
 //Version 10.19.18 (fixed switching & made dif drive ways into methods)
 @TeleOp(name = "TeleOp 12907", group = "teleop")
 public class TeleOp12907 extends LinearOpMode {
@@ -223,19 +222,18 @@ public class TeleOp12907 extends LinearOpMode {
             sweeper.setPower(powerSweep);
 
 
-            //putting minerals from sweeper into dumper
+            //putting minerals from sweeper into dumper:
+
             if (gamepad2.a) {
                 //Putting sweeper down
                 //sweeperDump.setPosition(0.3);
                 sweeperDump.setPosition(0.4);
-
             }
 
             if (gamepad2.x) {
                 //halfway sweeper servo position
                 //sweeperDump.setPosition(0.45);
                 sweeperDump.setPosition(0.6);
-
             }
 
             if (gamepad2.y) {
@@ -244,6 +242,9 @@ public class TeleOp12907 extends LinearOpMode {
                 sweeperDump.setPosition(1);
             }
 
+
+
+           //starting and stopping the sweeping motor:
             if(gamepad2.right_bumper){
                 if(!threadRunning){
                     ourSweeperThread.start();

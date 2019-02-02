@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 import org.firstinspires.ftc.teamcode.helper.SensorHelper;
 
-//dropping our team marker
+
 public class Marker {
 
     final long SLEEP_TIME_250 = 250;
@@ -19,10 +20,11 @@ public class Marker {
     public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, Servo sweeperDump, DcMotor sweeper, boolean turnRight) {
 
         //going back 8 inches
+        //going back 5 inches for precise angles
         double powerRight = -0.5;
         double powerLeft = -0.5;
-        double targetPositionLeft = -5;
-        double targetPositionRight = -5;
+        double targetPositionLeft = -5 + 0.25;
+        double targetPositionRight = -5 + 0.25;
         double timeoutS = 3;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
         try {
@@ -123,8 +125,16 @@ public class Marker {
         //PARKING!!
         //if it's white (true), wall follower right
 
+        /*ElapsedTime runTime = new ElapsedTime();
+        if(runTime.milliseconds() < 3000){
+
+        } else{
+            //do what it is doing below
+        }*/
+
         //double craterTargetPosition = -56;
-        double craterTargetPosition = -58;
+        //double craterTargetPosition = -58;
+        double craterTargetPosition = -57;
         if(turnRight){
             powerRight = -0.6;
             powerLeft = -0.5;

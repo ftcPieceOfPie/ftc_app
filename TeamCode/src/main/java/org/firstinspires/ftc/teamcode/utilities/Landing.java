@@ -26,8 +26,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 }
 */
 
-//landing
-
 public class Landing {
 
     final double LATCH_SERVO_POSITION = 0.8;

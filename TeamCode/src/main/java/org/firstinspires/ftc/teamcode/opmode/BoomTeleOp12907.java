@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 
 //making sure the program doesn't show up:
-//@Disabled
+@Disabled
 
 //Version 10.19.18 (fixed switching & made dif drive ways into methods)
 @TeleOp(name = "Boom TeleOp 12907", group = "teleop")
