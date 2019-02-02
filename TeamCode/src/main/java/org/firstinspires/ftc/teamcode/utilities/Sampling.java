@@ -56,8 +56,8 @@ public class Sampling {
         double targetPositionLeft = 15;
         double targetPositionRight = 15;
         double timeoutS = 5;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
-                targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                //targetPositionLeft, timeoutS, telemetry);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -90,8 +90,8 @@ public class Sampling {
             targetPositionLeft = newTargetPosition;
             targetPositionRight = newTargetPosition;
             timeoutS = 5;
-            motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
-                    targetPositionLeft, timeoutS, telemetry);
+            //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                    //targetPositionLeft, timeoutS, telemetry);
 
         } else {
             telemetry.addData("Distance from mineral: ", "sufficient!");
@@ -179,8 +179,8 @@ public class Sampling {
         double targetPositionLeft = 17.5;
         double targetPositionRight = 17.5;
         double timeoutS = 5;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
-                targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                //targetPositionLeft, timeoutS, telemetry);
 
         try {
             Thread.sleep(SLEEP_TIME_500);
@@ -249,8 +249,8 @@ public class Sampling {
         double targetPositionLeft = 4;
         double targetPositionRight = 4;
         double timeoutS = 5;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
-                targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                //targetPositionLeft, timeoutS, telemetry);
         telemetry.addData("Travel Forward: ", "yes");
         telemetry.update();
         powerRight = -0.25;
@@ -258,8 +258,8 @@ public class Sampling {
         targetPositionLeft = -4;
         targetPositionRight = -4;
         timeoutS = 5;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
-                targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight,
+                //targetPositionLeft, timeoutS, telemetry);
     }
 
     private void knockLeftYellow(Servo leftKnocker, Servo leftArm) {

@@ -24,7 +24,7 @@ public class Marker {
         double targetPositionLeft = -5;
         double targetPositionRight = -5;
         double timeoutS = 3;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
         try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
@@ -35,7 +35,7 @@ public class Marker {
         //turning towards wall - working
         float angle = 60;
         double turnPower = 0.5;
-        motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
+        //motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
         try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
@@ -50,7 +50,7 @@ public class Marker {
         targetPositionLeft = 30;
         targetPositionRight = 30;
         timeoutS = 6;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
         try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
@@ -76,7 +76,7 @@ public class Marker {
         if(turnRight){
             angle = -85;
             turnPower = 0.5;
-            motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
+            //motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
             telemetry.addData("turn: ","Right");
             telemetry.update();
         }
@@ -84,7 +84,7 @@ public class Marker {
         else{
             angle = 20;
             turnPower = 0.5;
-            motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
+            //motorHelper.turnWithEncoders(frontRight, frontLeft, backRight, backLeft, angle, turnPower, imu, telemetry);
             telemetry.addData("turn: ","Left");
             telemetry.update();
         }
@@ -101,7 +101,7 @@ public class Marker {
         targetPositionLeft = (29);
         targetPositionRight = (29);
         timeoutS = 6;
-        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+        //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
 
         //drop marker with servo movements
@@ -131,7 +131,7 @@ public class Marker {
             targetPositionLeft = craterTargetPosition;
             targetPositionRight = craterTargetPosition;
             timeoutS = 10;
-            motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+            //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
         }
         //or if it's not (it's black - false), wall follower left
@@ -141,7 +141,7 @@ public class Marker {
             targetPositionLeft = craterTargetPosition;
             targetPositionRight = craterTargetPosition;
             timeoutS = 10;
-            motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+            //motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
         }
     }
