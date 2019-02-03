@@ -227,13 +227,14 @@ public class TeleOp12907 extends LinearOpMode {
             if (gamepad2.a) {
                 //Putting sweeper down
                 //sweeperDump.setPosition(0.3);
-                sweeperDump.setPosition(0.4);
+                sweeperDump.setPosition(0.425);
             }
 
             if (gamepad2.x) {
                 //halfway sweeper servo position
                 //sweeperDump.setPosition(0.45);
-                sweeperDump.setPosition(0.6);
+                //sweeperDump.setPosition(0.6);
+                sweeperDump.setPosition(0.7);
             }
 
             if (gamepad2.y) {

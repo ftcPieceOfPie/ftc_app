@@ -100,8 +100,8 @@ public class Marker {
         //subtract 5 inches for dropping marker with sweeper servo extended length
         //targetPositionLeft = (35);
         //targetPositionRight = (35);
-        targetPositionLeft = (29);
-        targetPositionRight = (29);
+        targetPositionLeft = (28);
+        targetPositionRight = (28);
         timeoutS = 6;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
 
@@ -134,7 +134,7 @@ public class Marker {
 
         //double craterTargetPosition = -56;
         //double craterTargetPosition = -58;
-        double craterTargetPosition = -57;
+        double craterTargetPosition = -56;
         if(turnRight){
             powerRight = -0.6;
             powerLeft = -0.5;
