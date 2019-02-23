@@ -66,6 +66,8 @@ public class TeleOp12907 extends LinearOpMode {
         slide.setDirection(DcMotorSimple.Direction.FORWARD);
         sweeper.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        //slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         rightKnocker.setPosition(1);
 
         try {
@@ -133,7 +135,7 @@ public class TeleOp12907 extends LinearOpMode {
         double powerLeft = 0;
         double powerRight = 0;
         double powerLift = 1;
-        double powerSlide = 1;
+        //double powerSlide = 1;
         //double powerSweep = 1;
         //double powerDrive;
         //double powerTurn;
@@ -210,16 +212,29 @@ public class TeleOp12907 extends LinearOpMode {
             powerLift = -gamepad2.left_stick_y;
             lift.setPower(powerLift);
 
-            //using triggers to put the slide out and in
-            powerSlide = gamepad2.left_trigger;
+                //using triggers to put the slide out and in
+            /*powerSlide = gamepad2.left_trigger;
             slide.setPower(powerSlide * 0.9);
 
             powerSlide = gamepad2.right_trigger;
-            slide.setPower(-(powerSlide * 0.9));
+            slide.setPower(-(powerSlide * 0.9));*/
 
-            //using the right joystick to sweep in and out minerals
-            double powerSweep = gamepad2.right_stick_y;
-            sweeper.setPower(powerSweep);
+                //using joystick to put the slide out and in
+            double powerSlide = gamepad2.right_stick_y;
+            slide.setPower(powerSlide* 0.65);
+            telemetry.addData("Slide Encoder Value:", slide.getCurrentPosition());
+            telemetry.update();
+
+                //using the right joystick to sweep in and out minerals
+            /*double powerSweep = gamepad2.right_stick_y;
+            sweeper.setPower(powerSweep);*/
+
+                //using the triggers for sweeping in and out minerals
+            double powerSweep = gamepad2.right_trigger;
+            sweeper.setPower((powerSweep));
+
+            powerSweep = gamepad2.left_trigger;
+            sweeper.setPower(-(powerSweep));
 
 
             //putting minerals from sweeper into dumper:
@@ -227,7 +242,7 @@ public class TeleOp12907 extends LinearOpMode {
             if (gamepad2.a) {
                 //Putting sweeper down
                 //sweeperDump.setPosition(0.3);
-                sweeperDump.setPosition(0.425);
+                sweeperDump.setPosition(0.51);
             }
 
             if (gamepad2.x) {
