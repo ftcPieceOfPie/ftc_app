@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
+//program to test the servos for a backup sweeper box
+
 @TeleOp(name = "Servo Test", group = "Test")
 public class ServoTeleOp extends LinearOpMode {
 
