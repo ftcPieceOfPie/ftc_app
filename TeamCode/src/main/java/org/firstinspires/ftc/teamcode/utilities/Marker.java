@@ -17,7 +17,7 @@ public class Marker {
 
     final long SLEEP_TIME_250 = 250;
 
-    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, Servo sweeperDump, DcMotor sweeper, boolean turnRight) {
+    public void dropMarkerToDepot(DcMotor frontRight, DcMotor frontLeft, DcMotor backRight, DcMotor backLeft, MotorHelper motorHelper, Telemetry telemetry, BNO055IMU imu, Servo sweeperDump, Servo sweeperDumpRight, Servo sweeperDumpLeft, DcMotor sweeper, boolean turnRight) {
 
         //going back 8 inches
         //going back 5 inches for precise angles
@@ -107,11 +107,21 @@ public class Marker {
 
 
         //drop marker with servo movements
-       double markerDropPositionDown = 0.4;
-       double markerDropPositionUp = 0.9;
+
+        //one servo sweeper box
+        //double markerDropPositionDown = 0.4;
+        //double markerDropPositionUp = 0.9;
+
+        //setting the servo up & down positions for dropping the marker with the left servo
+        double markerDropRightPositionDown = 0.23;
+        double markerDropLeftPositionDown = 0.69;
+        //setting the servo up & down positions for dropping the marker with the left servo
+        double markerDropRightPositionUp = 0.7;
+        double markerDropLeftPositionUp = 0.17;
+
 
         //timeoutS = 5000;
-        motorHelper.markerDrop(sweeperDump, markerDropPositionDown, markerDropPositionUp, sweeper, telemetry);
+        motorHelper.markerDrop(sweeperDumpRight,sweeperDumpLeft, markerDropRightPositionDown, markerDropRightPositionUp,markerDropLeftPositionDown, markerDropLeftPositionUp, sweeper, telemetry);
 
         /*try {
             Thread.sleep(SLEEP_TIME_250);
@@ -121,20 +131,23 @@ public class Marker {
 
 
 
-        //go backwards 48 feet (INTO CRATER)
-        //PARKING!!
-        //if it's white (true), wall follower right
+        /**
+         * PARKING:
+         * go backwards 48 feet (INTO CRATER)
+         * if it's white (true), wall follower right
+         */
 
-        /*ElapsedTime runTime = new ElapsedTime();
-        if(runTime.milliseconds() < 3000){
+        //ElapsedTime runTime = new ElapsedTime();
+        //if(runTime.milliseconds() < 3000){
 
-        } else{
+        //} else{
             //do what it is doing below
-        }*/
+        //}
 
         //double craterTargetPosition = -56;
         //double craterTargetPosition = -58;
         double craterTargetPosition = -56;
+
         if(turnRight){
             powerRight = -0.6;
             powerLeft = -0.5;

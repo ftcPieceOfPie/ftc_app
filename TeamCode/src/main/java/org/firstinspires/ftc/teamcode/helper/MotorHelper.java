@@ -256,8 +256,45 @@ public class MotorHelper {
 
 
 
+    /**
+    Marker drop using TWO servos:
+     */
+    public void markerDrop(Servo sweeperDumpRight,Servo sweeperDumpLeft, double sweeperDumpRightDown, double sweeperDumpRightUp, double sweeperDumpLeftDown, double sweeperDumpLeftUp, DcMotor sweeper, Telemetry telemetry) {
+        //Making sure that the servo position given doesn't exceed or go to low
 
-    public void markerDrop(Servo sweeperDump, double sweeperDumpPositionDown, double sweeperDumpPositionUp, DcMotor sweeper, Telemetry telemetry) {
+        sweeperDumpRight.setPosition(Range.clip(sweeperDumpRightDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
+        sweeperDumpLeft.setPosition(Range.clip(sweeperDumpLeftDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
+
+        try {
+            Thread.sleep(SLEEP_TIME_500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        while(runtime.milliseconds()<500){
+            sweeper.setPower(-1);
+        }
+        sweeper.setPower(0);
+
+        sweeperDumpRight.setPosition(Range.clip(sweeperDumpRightUp, Servo.MIN_POSITION, Servo.MAX_POSITION));
+        sweeperDumpLeft.setPosition(Range.clip(sweeperDumpLeftUp, Servo.MIN_POSITION, Servo.MAX_POSITION));
+
+        try {
+            Thread.sleep(SLEEP_TIME_500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    /**
+    Marker drop using ONE servo:
+     */
+
+    /*public void markerDrop(Servo sweeperDump, double sweeperDumpPositionDown, double sweeperDumpPositionUp, DcMotor sweeper, Telemetry telemetry) {
         //Making sure that the servo position given doesn't exceed or go to low
 
         sweeperDump.setPosition(Range.clip(sweeperDumpPositionDown, Servo.MIN_POSITION, Servo.MAX_POSITION));
@@ -282,12 +319,14 @@ public class MotorHelper {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
 
-
-    public void boomEncoder(DcMotor boom, int boomTargetPosition, double boomPower, Telemetry telemetry) {
+    /*
+    Testing the encoder on the motor for the 'boom' machine
+     */
+    /*public void boomEncoder(DcMotor boom, int boomTargetPosition, double boomPower, Telemetry telemetry) {
 
         boom.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         boom.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -306,7 +345,7 @@ public class MotorHelper {
         }
         boom.setPower(0);
 
-    }
+    }*/
 
 }
 

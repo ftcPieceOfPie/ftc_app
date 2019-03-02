@@ -108,6 +108,8 @@ public class Autonomous12907 extends LinearOpMode {
     Servo latch;
     //Servo markerDropper;
     Servo sweeperDump;
+    Servo sweeperDumpRight;
+    Servo sweeperDumpLeft;
     Servo rightArm;
     Servo leftArm;
     Servo rightKnocker;
@@ -142,6 +144,8 @@ public class Autonomous12907 extends LinearOpMode {
         distanceSensor = hardwareMap.get(DistanceSensor.class, "sensorDistance");
         //markerDropper = hardwareMap.get(Servo.class, "markerDropper");
         sweeperDump = hardwareMap.get(Servo.class, "sweeperDump");
+        sweeperDumpRight = hardwareMap.get(Servo.class, "sweeperDumpRight");
+        sweeperDumpLeft = hardwareMap.get(Servo.class, "sweeperDumpLeft");
         markerColor = hardwareMap.get(ColorSensor.class, "markerColor");
         middleColor = hardwareMap.get(ColorSensor.class, "middleColor");
         knockerColor = hardwareMap.get(ColorSensor.class, "knockerColor");
@@ -223,13 +227,21 @@ public class Autonomous12907 extends LinearOpMode {
                 }
 
 
-                //initializing sweeper dump inwards for start of autonomous
-                sweeperDump.setPosition(1);
+                //initializing sweeper box inwards for start of autonomous
+                //initializing the right and left servos for the sweeper box
+                sweeperDumpRight.setPosition(0.75);
+                sweeperDumpLeft.setPosition(0.17);
                 try {
                     Thread.sleep(SLEEP_TIME_250);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                /*sweeperDump.setPosition(1);
+                try {
+                    Thread.sleep(SLEEP_TIME_250);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }*/
 
 
                 //landing then unlatching - WORKING
@@ -245,7 +257,7 @@ public class Autonomous12907 extends LinearOpMode {
                 }
 
                 //moving to depot - WORKING
-                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, sweeperDump, sweeper, turnRight);
+                marker.dropMarkerToDepot(frontRight, frontLeft, backRight, backLeft, motorHelper, telemetry, imu, sweeperDump, sweeperDumpRight,sweeperDumpLeft, sweeper,  turnRight);
             }
         } catch (Exception bad){
             telemetry.addData("EXCEPTION:", bad.toString());
