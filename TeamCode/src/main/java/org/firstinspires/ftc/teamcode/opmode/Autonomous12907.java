@@ -57,6 +57,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -197,8 +198,8 @@ public class Autonomous12907 extends LinearOpMode {
             SensorHelper sensorHelper = new SensorHelper();
 
             //TensorCode:
-            // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
-            // first.
+            // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that first.
+
             initVuforia();
             boolean canUseTensor;
             if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
@@ -222,15 +223,17 @@ public class Autonomous12907 extends LinearOpMode {
             if (opModeIsActive()) {
                 //calling tensor (same code as ConceptTensorFlowObjectDetection)
                 String yellowPosition = "Unknown";
-                if (canUseTensor) {
+                if (canUseTensor & turnRight) {
                     yellowPosition = detectYellowPosition();
                 }
 
 
                 //initializing sweeper box inwards for start of autonomous
                 //initializing the right and left servos for the sweeper box
-                sweeperDumpRight.setPosition(0.75);
-                sweeperDumpLeft.setPosition(0.17);
+                    //sweeperDumpRight.setPosition(0.7);
+                    //sweeperDumpLeft.setPosition(0.17);
+                sweeperDumpRight.setPosition(0.9);
+                sweeperDumpLeft.setPosition(0);
                 try {
                     Thread.sleep(SLEEP_TIME_250);
                 } catch (InterruptedException e) {
@@ -269,6 +272,15 @@ public class Autonomous12907 extends LinearOpMode {
             }
         }
     }
+
+
+
+
+
+
+
+
+
 
 
 

@@ -273,7 +273,11 @@ public class MotorHelper {
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        while(runtime.milliseconds()<500){
+        /*while(runtime.milliseconds()<500){
+            sweeper.setPower(-1);
+        }*/
+
+        while(runtime.milliseconds()<1000){
             sweeper.setPower(-1);
         }
         sweeper.setPower(0);

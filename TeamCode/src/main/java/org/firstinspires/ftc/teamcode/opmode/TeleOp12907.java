@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.helper.MotorHelper;
 @TeleOp(name = "TeleOp 12907", group = "teleop")
 public class TeleOp12907 extends LinearOpMode {
     //Naming the motors
-    DcMotor backLeft;
+   DcMotor backLeft;
     DcMotor frontRight;
     DcMotor backRight;
     DcMotor frontLeft;
@@ -33,6 +33,7 @@ public class TeleOp12907 extends LinearOpMode {
     Servo mineralDump;
     Servo rightKnocker;
     Servo leftKnocker;
+
     BNO055IMU imu = null;
 
     final double EXTENDED_POSITION = 0.8;
@@ -102,14 +103,6 @@ public class TeleOp12907 extends LinearOpMode {
 
         double powerScaleFactor = 0.9;
 
-       //changing quadratic drive speed for alligning to the lander
-        if (gamepad1.left_bumper){
-            powerScaleFactor = 0.6;
-        }
-
-        if (gamepad1.right_bumper) {
-            powerScaleFactor= 0.9;
-        }
 
         //Quadratic Drive: the power is set to x squared
         //Math: power cubed over the absolute power = power squared --> to keep the sign of the orig pwr
@@ -287,25 +280,52 @@ public class TeleOp12907 extends LinearOpMode {
 
             //Putting minerals from sweeper box into dumper using TWO servos:
             if (gamepad2.y) {
-                //Putting sweeper up
-                //sweeperDump.setPosition(0.3);
-                sweeperDumpRight.setPosition(0.7);
-                sweeperDumpLeft.setPosition(0.17);
+                    //Putting sweeper up
+
+                //lower up
+                //sweeperDumpRight.setPosition(0.7);
+                //sweeperDumpLeft.setPosition(0.17);
+
+                //backup servo positions
+                sweeperDumpRight.setPosition(0.9);
+                sweeperDumpLeft.setPosition(0);
+
+                //new servo positions
+                //sweeperDumpRight.setPosition(0.8);
+                //sweeperDumpLeft.setPosition(0.09);
             }
 
             if (gamepad2.x) {
-                //halfway sweeper servo position
-                //sweeperDump.setPosition(0.45);
-                //sweeperDump.setPosition(0.6);
-                sweeperDumpRight.setPosition(0.37);
-                sweeperDumpLeft.setPosition(0.5);
+                    //halfway sweeper servo position
+
+                //lower halfway
+                //sweeperDumpRight.setPosition(0.37);
+                //sweeperDumpLeft.setPosition(0.5);
+
+                //backup servo positions
+                sweeperDumpRight.setPosition(0.595);
+                sweeperDumpLeft.setPosition(0.275);
+
+                //new servo positions
+                //sweeperDumpRight.setPosition(0.48);
+                //sweeperDumpLeft.setPosition(0.375);
             }
 
             if (gamepad2.a) {
-                //put minerals into down
-                //sweeperDump.setPosition(0.8);
+                    //put minerals into down
+
+                //lower down
                 sweeperDumpRight.setPosition(0.23);
                 sweeperDumpLeft.setPosition(0.69);
+
+                //backup servo positions
+                //sweeperDumpRight.setPosition(0.48);
+                //sweeperDumpLeft.setPosition(0.44);
+
+                //new servo positions
+                //sweeperDumpRight.setPosition(0.35);
+                //sweeperDumpLeft.setPosition(0.57);
+
             }
 
 

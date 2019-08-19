@@ -96,15 +96,17 @@ public class Marker {
             e.printStackTrace();
         }
 
+
+        //...................................................................................
+
         //go forwards 4 feet to the DEPOT
         //subtract 5 inches for dropping marker with sweeper servo extended length
-        //targetPositionLeft = (35);
-        //targetPositionRight = (35);
+            //targetPositionLeft = (35);
+            //targetPositionRight = (35);
         targetPositionLeft = (28);
         targetPositionRight = (28);
         timeoutS = 6;
         motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
-
 
         //drop marker with servo movements
 
@@ -113,21 +115,54 @@ public class Marker {
         //double markerDropPositionUp = 0.9;
 
         //setting the servo up & down positions for dropping the marker with the left servo
-        double markerDropRightPositionDown = 0.23;
-        double markerDropLeftPositionDown = 0.69;
+        double markerDropRightPositionDown = 0.43;
+        double markerDropLeftPositionDown = 0.49;
+            //sweeperDumpRight.setPosition(0.23);
+            //sweeperDumpLeft.setPosition(0.69);
         //setting the servo up & down positions for dropping the marker with the left servo
-        double markerDropRightPositionUp = 0.7;
-        double markerDropLeftPositionUp = 0.17;
+        double markerDropRightPositionUp = 0.9;
+        double markerDropLeftPositionUp = 0.0;
+            //sweeperDumpRight.setPosition(0.7);
+            //sweeperDumpLeft.setPosition(0.17);
 
-
-        //timeoutS = 5000;
         motorHelper.markerDrop(sweeperDumpRight,sweeperDumpLeft, markerDropRightPositionDown, markerDropRightPositionUp,markerDropLeftPositionDown, markerDropLeftPositionUp, sweeper, telemetry);
-
         /*try {
             Thread.sleep(SLEEP_TIME_250);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }*/
+
+        //...................................................................................
+
+
+        //non-interfering marker drop (stops before depot --> drops marker --> robot moves forward to push it in)
+
+        /*targetPositionLeft = (16);
+        targetPositionRight = (16);
+        timeoutS = 6;
+        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+
+        double markerDropRightPositionDown = 0.43;
+        double markerDropLeftPositionDown = 0.49;
+        //sweeperDumpRight.setPosition(0.23);
+        //sweeperDumpLeft.setPosition(0.69);
+        //setting the servo up & down positions for dropping the marker with the left servo
+        double markerDropRightPositionUp = 0.9;
+        double markerDropLeftPositionUp = 0.0;
+        //sweeperDumpRight.setPosition(0.7);
+        //sweeperDumpLeft.setPosition(0.17);
+
+        motorHelper.markerDrop(sweeperDumpRight,sweeperDumpLeft, markerDropRightPositionDown, markerDropRightPositionUp,markerDropLeftPositionDown, markerDropLeftPositionUp, sweeper, telemetry);
+
+        targetPositionLeft = (12);
+        targetPositionRight = (12);
+        timeoutS = 6;
+        motorHelper.movingWithEncoders(frontRight, frontLeft, backRight, backLeft, powerRight, powerLeft, targetPositionRight, targetPositionLeft, timeoutS, telemetry);
+        */
+
+
+
+
 
 
 
